@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">NSAW</string>
+    <string name="onboard_news">Stay updated with the latest news from 5000+ sources.</string>
+    <string name="onboard_stock">Keep track of the latest stock market trends.</string>
+    <string name="onboard_weather">Get Real-Time location based weather forecasts.</string>
+    <string name="onboarding_button">let\'s begin</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="github_url">https://github.com/Adsama94/Capstone-Project</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="contribute_to_nsaw_on_github">Contribute to NSAW on GitHub!</string>
+    <string name="email_for_support_suggestions">Email for Support/Suggestions!</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="revoke_location_permission">Revoke location permission</string>
+    <string name="please_sign_in_to_continue">Please sign in to continue!</string>
+
+</resources>
