@@ -62,7 +62,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+        Log.i(LOG_TAG, "Connected");
+        Toast.makeText(this, "SIGNED IN SUCCESSFULLY", Toast.LENGTH_LONG).show();
     }
 
     @Override
