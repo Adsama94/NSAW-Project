@@ -17,8 +17,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.anvil.adsama.nsaw.R;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -40,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     CircleImageView mProfileImageView;
     TextView mProfileNameView;
     TextView mProfileEmailView;
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +66,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
         setNavDrawer();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+        mGoogleApiClient.connect();
+
     }
 
     private void setNavDrawer() {
@@ -134,9 +150,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
             }
         } else if (id == R.id.nav_logout) {
-//            TODO: HANDLE SIGN OUT AND A LOT MORE
-            Intent onBoardingIntent = new Intent(this, OnBoardingActivity.class);
-            startActivity(onBoardingIntent);
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(@NonNull Status status) {
+                    Toast.makeText(getApplicationContext(), "Signed out " + status, Toast.LENGTH_LONG).show();
+                    Intent onBoardingIntent = new Intent(getApplicationContext(), OnBoardingActivity.class);
+                    startActivity(onBoardingIntent);
+                }
+            });
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;

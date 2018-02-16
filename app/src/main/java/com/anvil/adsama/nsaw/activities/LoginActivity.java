@@ -17,8 +17,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,7 +61,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(LOG_TAG, "Connected");
-        Toast.makeText(this, "SIGNED IN SUCCESSFULLY", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -73,8 +70,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(this, "UNEXPECTED ERROR OCCURRED " + connectionResult, Toast.LENGTH_LONG).show();
-        Log.e(LOG_TAG, "Connectivity error occurred " + connectionResult);
+        Log.i(LOG_TAG, "onConnectionFailed " + connectionResult.getErrorCode());
     }
 
     @Override
@@ -92,14 +88,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-    public void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-            }
-        });
-    }
-
     private void handleResult(@NonNull GoogleSignInResult result) {
         if (result.isSuccess()) {
             GoogleSignInAccount signInAccount = result.getSignInAccount();
@@ -107,11 +95,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             String accountEmail = signInAccount.getEmail();
             String accountUrl = String.valueOf(signInAccount.getPhotoUrl());
             mGoogleButton.setEnabled(false);
+            Toast.makeText(this, "Welcome " + accountName, Toast.LENGTH_SHORT).show();
             Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
             mainIntent.putExtra(NAME_EXTRA, accountName);
             mainIntent.putExtra(EMAIL_EXTRA, accountEmail);
             mainIntent.putExtra(URL_EXTRA, accountUrl);
             startActivity(mainIntent);
+            finish();
         }
     }
 }
