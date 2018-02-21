@@ -5,10 +5,10 @@
     <string name="onboard_weather">Get Real-Time location based weather forecasts.</string>
     <string name="onboarding_button">let\'s begin</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="github_url">https://github.com/Adsama94/Capstone-Project</string>
+    <string name="github_url">https://github.com/Adsama94/NSAW-Project</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="action_settings">Settings</string>
     <string name="contribute_to_nsaw_on_github">Contribute to NSAW on GitHub!</string>
     <string name="email_for_support_suggestions">Email for Support/Suggestions!</string>

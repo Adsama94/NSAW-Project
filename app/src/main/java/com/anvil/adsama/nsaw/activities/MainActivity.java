@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +20,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.anvil.adsama.nsaw.R;
+import com.anvil.adsama.nsaw.adapters.NewsAdapter;
+import com.anvil.adsama.nsaw.model.AlphaVantage;
+import com.anvil.adsama.nsaw.model.DarkSky;
+import com.anvil.adsama.nsaw.model.NewsAPI;
+import com.anvil.adsama.nsaw.network.NewsAsyncTask;
+import com.anvil.adsama.nsaw.network.NewsListener;
+import com.anvil.adsama.nsaw.network.StockListener;
+import com.anvil.adsama.nsaw.network.WeatherListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,26 +37,34 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NewsListener, StockListener, WeatherListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String EMAIL_EXTRA = "EMAIL_EXTRA";
     private static final String URL_EXTRA = "URL_EXTRA";
     private static final String NAME_EXTRA = "NAME_EXTRA";
+    @BindView(R.id.adView)
+    AdView mAdView;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+    @BindView(R.id.recycler_main)
+    RecyclerView mNewsRecyclerView;
     CircleImageView mProfileImageView;
     TextView mProfileNameView;
     TextView mProfileEmailView;
     GoogleApiClient mGoogleApiClient;
+    ArrayList<NewsAPI> mNewsAPIData;
+    NewsAdapter mNewsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,18 +72,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            }
-        });
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
+        mAdView.loadAd(adRequest);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
         setNavDrawer();
+        NewsAsyncTask newsRequest = new NewsAsyncTask(this);
+        newsRequest.execute();
+    }
+
+    private void initialiseNews(ArrayList<NewsAPI> newsAPIArrayList) {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mNewsAdapter = new NewsAdapter(newsAPIArrayList, this);
+        mNewsRecyclerView.setAdapter(mNewsAdapter);
+        mNewsRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
     @Override
@@ -161,5 +183,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void returnNewsList(ArrayList<NewsAPI> newsAPIList) {
+        mNewsAPIData = new ArrayList<>();
+        mNewsAPIData = newsAPIList;
+        initialiseNews(mNewsAPIData);
+    }
+
+    @Override
+    public void returnWeatherList(ArrayList<DarkSky> darkSkyList) {
+
+    }
+
+    @Override
+    public void returnStockList(ArrayList<AlphaVantage> alphaVantageList) {
+
     }
 }
