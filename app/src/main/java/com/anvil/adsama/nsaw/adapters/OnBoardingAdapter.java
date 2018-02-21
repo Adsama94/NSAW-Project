@@ -14,7 +14,6 @@ public class OnBoardingAdapter extends PagerAdapter {
     private Context mContext;
     private int[] mBackgroundImages = {R.drawable.news_nav, R.drawable.stock_nav, R.drawable.weather_nav};
 
-
     public OnBoardingAdapter(Context context) {
         mContext = context;
     }

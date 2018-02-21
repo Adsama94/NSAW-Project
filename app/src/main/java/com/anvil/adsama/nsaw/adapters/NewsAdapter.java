@@ -1,6 +1,7 @@
 package com.anvil.adsama.nsaw.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,11 +48,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     }
 
     class NewsHolder extends RecyclerView.ViewHolder {
+        CardView mCardView;
         ImageView mNewsImage;
         TextView mNewsTitle;
 
         NewsHolder(View itemView) {
             super(itemView);
+            mCardView = itemView.findViewById(R.id.cardView);
             mNewsImage = itemView.findViewById(R.id.news_image);
             mNewsTitle = itemView.findViewById(R.id.tv_news_title);
         }
