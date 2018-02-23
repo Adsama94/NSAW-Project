@@ -14,7 +14,7 @@ import okhttp3.Response;
 public class NewsParser {
 
     private static final String LOG_TAG = NewsParser.class.getSimpleName();
-    private static final String NEWS_URL = "https://newsapi.org/v2/everything?q=bitcoin&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
+    private static final String NEWS_URL = "https://newsapi.org/v2/everything?q=bitcoin&language=en&pageSize=30&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
 
     public static JSONObject getNewsData() {
         OkHttpClient client = new OkHttpClient();

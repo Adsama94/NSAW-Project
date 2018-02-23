@@ -2,8 +2,8 @@ package com.anvil.adsama.nsaw.network;
 
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -14,14 +14,14 @@ import okhttp3.Response;
 public class WeatherParser {
 
     private static final String LOG_TAG = WeatherParser.class.getSimpleName();
-    private static final String WEATHER_URL = "";
+    private static final String WEATHER_URL = "https://api.darksky.net/forecast/[key]/[latitude],[longitude]";
 
-    public static JSONArray getWeatherData() {
+    public static JSONObject getWeatherData() {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(WEATHER_URL).build();
         try {
             Response response = client.newCall(request).execute();
-            return new JSONArray(response.body().string());
+            return new JSONObject(response.body().string());
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "WEATHER EXCEPTION IS " + e);

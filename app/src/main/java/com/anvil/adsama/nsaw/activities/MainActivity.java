@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     GoogleApiClient mGoogleApiClient;
     ArrayList<NewsAPI> mNewsAPIData;
     NewsAdapter mNewsAdapter;
+    EditText mEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
         setNavDrawer();
+        mNavigationView.setCheckedItem(R.id.nav_news);
         NewsAsyncTask newsRequest = new NewsAsyncTask(this);
         newsRequest.execute();
     }
@@ -123,23 +126,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_location:
+                return true;
+            case R.id.action_search:
+//                searchNews();
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -150,13 +150,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_news) {
-
+            mToolbar.setTitle(R.string.news);
         } else if (id == R.id.nav_stock) {
-
+            mToolbar.setTitle(R.string.stock);
         } else if (id == R.id.nav_weather) {
-
+            mToolbar.setTitle(R.string.weather);
         } else if (id == R.id.nav_bookmark) {
-
+            mToolbar.setTitle(R.string.bookmarks);
         } else if (id == R.id.nav_settings) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
@@ -201,4 +201,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void returnStockList(ArrayList<AlphaVantage> alphaVantageList) {
 
     }
+
+//    private void searchNews() {
+//        String query = mEditText.toString();
+//        String newsUrl = "https://newsapi.org/v2/everything?q=" + query + "&language=en&pageSize=40&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
+//    }
 }

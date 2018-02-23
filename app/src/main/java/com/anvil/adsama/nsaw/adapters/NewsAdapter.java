@@ -1,7 +1,6 @@
 package com.anvil.adsama.nsaw.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     @Override
     public NewsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.news_card_layout, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.news_list_item, parent, false);
         return new NewsHolder(view);
     }
 
@@ -35,7 +34,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     public void onBindViewHolder(NewsHolder holder, int position) {
         NewsAPI newsAPI = mNewsList.get(position);
         holder.mNewsTitle.setText(newsAPI.getTitle());
-        Picasso.with(mContext).load(newsAPI.getImageUrl()).into(holder.mNewsImage);
+        Picasso.with(mContext).load(newsAPI.getImageUrl()).error(R.drawable.news_nav).into(holder.mNewsImage);
     }
 
     @Override
@@ -48,14 +47,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     }
 
     class NewsHolder extends RecyclerView.ViewHolder {
-        CardView mCardView;
         ImageView mNewsImage;
         TextView mNewsTitle;
 
         NewsHolder(View itemView) {
             super(itemView);
-            mCardView = itemView.findViewById(R.id.cardView);
-            mNewsImage = itemView.findViewById(R.id.news_image);
+            mNewsImage = itemView.findViewById(R.id.iv_news_image);
             mNewsTitle = itemView.findViewById(R.id.tv_news_title);
         }
     }

@@ -15,5 +15,14 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="revoke_location_permission">Revoke location permission</string>
     <string name="please_sign_in_to_continue">Please sign in to continue!</string>
-
+    <string name="news">News</string>
+    <string name="stock">Stock</string>
+    <string name="weather">Weather</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="settings">Settings</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="log_out">Log Out</string>
+    <string name="location">Location</string>
+    <string name="search">Search</string>
+    <string name="newsURL">https://newsapi.org/v2/everything?q=bitcoin&amp;language=en&amp;pageSize=40&amp;sortBy=publishedAt&amp;apiKey=f89ab3ddfae84bd8866a8d7d26d961f1</string>
 </resources>

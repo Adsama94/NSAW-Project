@@ -24,6 +24,7 @@ public class NewsAPI implements Parcelable {
             return (new NewsAPI[size]);
         }
     };
+
     @SerializedName("author")
     @Expose
     private String mAuthorName;
