@@ -16,7 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NewsListener, StockListener, WeatherListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NewsListener, StockListener, WeatherListener, SearchView.OnQueryTextListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String EMAIL_EXTRA = "EMAIL_EXTRA";
@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     GoogleApiClient mGoogleApiClient;
     ArrayList<NewsAPI> mNewsAPIData;
     NewsAdapter mNewsAdapter;
-    EditText mEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_location:
                 return true;
             case R.id.action_search:
-//                searchNews();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -202,8 +200,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-//    private void searchNews() {
-//        String query = mEditText.toString();
-//        String newsUrl = "https://newsapi.org/v2/everything?q=" + query + "&language=en&pageSize=40&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
-//    }
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
 }
