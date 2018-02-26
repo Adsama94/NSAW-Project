@@ -10,6 +10,7 @@ public class NewsAPI implements Parcelable {
 
     public static final Parcelable.Creator<NewsAPI> CREATOR = new Creator<NewsAPI>() {
 
+        @Override
         public NewsAPI createFromParcel(Parcel parcel) {
             NewsAPI newsAPI = new NewsAPI();
             newsAPI.mAuthorName = ((String) parcel.readValue((String.class.getClassLoader())));
@@ -20,11 +21,11 @@ public class NewsAPI implements Parcelable {
             return newsAPI;
         }
 
+        @Override
         public NewsAPI[] newArray(int size) {
             return (new NewsAPI[size]);
         }
     };
-
     @SerializedName("author")
     @Expose
     private String mAuthorName;

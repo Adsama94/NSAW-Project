@@ -47,6 +47,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     }
 
     class NewsHolder extends RecyclerView.ViewHolder {
+
         ImageView mNewsImage;
         TextView mNewsTitle;
 

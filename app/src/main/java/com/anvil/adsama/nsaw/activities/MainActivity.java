@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,12 +23,14 @@ import android.widget.Toast;
 
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.adapters.NewsAdapter;
+import com.anvil.adsama.nsaw.fragments.WeatherFragment;
 import com.anvil.adsama.nsaw.model.AlphaVantage;
 import com.anvil.adsama.nsaw.model.DarkSky;
 import com.anvil.adsama.nsaw.model.NewsAPI;
 import com.anvil.adsama.nsaw.network.NewsAsyncTask;
 import com.anvil.adsama.nsaw.network.NewsListener;
 import com.anvil.adsama.nsaw.network.StockListener;
+import com.anvil.adsama.nsaw.network.WeatherAsyncTask;
 import com.anvil.adsama.nsaw.network.WeatherListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -58,14 +61,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView mNavigationView;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-    @BindView(R.id.recycler_main)
+    @BindView(R.id.recycler_news)
     RecyclerView mNewsRecyclerView;
+    @BindView(R.id.news_layout_main)
+    ConstraintLayout mNewsLayout;
     CircleImageView mProfileImageView;
     TextView mProfileNameView;
     TextView mProfileEmailView;
     GoogleApiClient mGoogleApiClient;
+    LinearLayoutManager linearLayoutManager;
     ArrayList<NewsAPI> mNewsAPIData;
+    ArrayList<DarkSky> mDarkSkyData;
     NewsAdapter mNewsAdapter;
+    WeatherFragment mWeatherFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,13 +92,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mNavigationView.setCheckedItem(R.id.nav_news);
         NewsAsyncTask newsRequest = new NewsAsyncTask(this);
         newsRequest.execute();
-    }
-
-    private void initialiseNews(ArrayList<NewsAPI> newsAPIArrayList) {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mNewsAdapter = new NewsAdapter(newsAPIArrayList, this);
-        mNewsRecyclerView.setAdapter(mNewsAdapter);
-        mNewsRecyclerView.setLayoutManager(linearLayoutManager);
+        WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask(this);
+        weatherAsyncTask.execute();
     }
 
     @Override
@@ -99,19 +103,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
         mGoogleApiClient.connect();
 
-    }
-
-    private void setNavDrawer() {
-        View headerView = mNavigationView.getHeaderView(0);
-        mProfileImageView = headerView.findViewById(R.id.cv_profileImage);
-        mProfileNameView = headerView.findViewById(R.id.tv_profileName);
-        mProfileEmailView = headerView.findViewById(R.id.tv_emailId);
-        String profileName = getIntent().getStringExtra(NAME_EXTRA);
-        String profileEmail = getIntent().getStringExtra(EMAIL_EXTRA);
-        String profileImageURL = getIntent().getStringExtra(URL_EXTRA);
-        Picasso.with(getApplicationContext()).load(profileImageURL).into(mProfileImageView);
-        mProfileNameView.setText(profileName);
-        mProfileEmailView.setText(profileEmail);
     }
 
     @Override
@@ -148,17 +139,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_news) {
+
             mToolbar.setTitle(R.string.news);
+
         } else if (id == R.id.nav_stock) {
+
             mToolbar.setTitle(R.string.stock);
+
         } else if (id == R.id.nav_weather) {
+
             mToolbar.setTitle(R.string.weather);
+//            mNewsLayout.setVisibility(View.GONE);
+            setWeatherData();
+
         } else if (id == R.id.nav_bookmark) {
+
             mToolbar.setTitle(R.string.bookmarks);
+
         } else if (id == R.id.nav_settings) {
+
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
+
         } else if (id == R.id.nav_rating) {
+
             Uri uri = Uri.parse("market://details?id=" + getApplicationContext().getPackageName());
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             // To count with Play market backstack, After pressing back button,
@@ -169,7 +173,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } catch (ActivityNotFoundException e) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
             }
+
         } else if (id == R.id.nav_logout) {
+
             Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(@NonNull Status status) {
@@ -178,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startActivity(onBoardingIntent);
                 }
             });
+
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -192,7 +199,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void returnWeatherList(ArrayList<DarkSky> darkSkyList) {
-
+        mDarkSkyData = new ArrayList<>();
+        mDarkSkyData = darkSkyList;
     }
 
     @Override
@@ -208,5 +216,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
+    }
+
+    private void setNavDrawer() {
+        View headerView = mNavigationView.getHeaderView(0);
+        mProfileImageView = headerView.findViewById(R.id.cv_profileImage);
+        mProfileNameView = headerView.findViewById(R.id.tv_profileName);
+        mProfileEmailView = headerView.findViewById(R.id.tv_emailId);
+        String profileName = getIntent().getStringExtra(NAME_EXTRA);
+        String profileEmail = getIntent().getStringExtra(EMAIL_EXTRA);
+        String profileImageURL = getIntent().getStringExtra(URL_EXTRA);
+        Picasso.with(getApplicationContext()).load(profileImageURL).into(mProfileImageView);
+        mProfileNameView.setText(profileName);
+        mProfileEmailView.setText(profileEmail);
+    }
+
+    private void initialiseNews(ArrayList<NewsAPI> newsAPIArrayList) {
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mNewsAdapter = new NewsAdapter(newsAPIArrayList, this);
+        mNewsRecyclerView.setAdapter(mNewsAdapter);
+        mNewsRecyclerView.setLayoutManager(linearLayoutManager);
+    }
+
+    private void setWeatherData() {
+        Bundle bundleForWeather = new Bundle();
+        bundleForWeather.putParcelableArrayList("DarkSky", mDarkSkyData);
+        if (mDarkSkyData != null) {
+            mWeatherFragment = new WeatherFragment();
+            mWeatherFragment.setArguments(bundleForWeather);
+            getSupportFragmentManager().beginTransaction().add(R.id.weather_fragment_container, mWeatherFragment).commit();
+        }
     }
 }
