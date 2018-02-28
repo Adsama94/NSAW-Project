@@ -5,39 +5,37 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.anvil.adsama.nsaw.R;
-import com.anvil.adsama.nsaw.model.DarkSky;
-import com.squareup.picasso.Picasso;
+import com.anvil.adsama.nsaw.model.DarkSkyDaily;
 
 import java.util.ArrayList;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherHolder> {
 
-    private ArrayList<DarkSky> mWeatherList;
+    private ArrayList<DarkSkyDaily> mWeatherList;
     private Context mContext;
 
-    public WeatherAdapter(ArrayList<DarkSky> weatherList, Context context) {
+    public WeatherAdapter(ArrayList<DarkSkyDaily> weatherList, Context context) {
         mWeatherList = weatherList;
         mContext = context;
     }
 
     @Override
     public WeatherHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.weather_list_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.weather_daily_item, parent, false);
         return new WeatherHolder(view);
     }
 
     @Override
     public void onBindViewHolder(WeatherHolder holder, int position) {
-        DarkSky darkSky = mWeatherList.get(position);
-        Picasso.with(mContext).load(darkSky.getIcon()).into(holder.mIconView);
-        holder.mSummary.setText(darkSky.getSummary());
-        holder.mWindSpeed.setText(String.valueOf(darkSky.getWindSpeed()));
-        holder.mTemperature.setText(String.valueOf(darkSky.getTemperature()));
-        holder.mVisibility.setText(String.valueOf(darkSky.getVisibility()));
+        DarkSkyDaily darkSky = mWeatherList.get(position);
+        holder.mWeeklySummary.setText(darkSky.getWeeklySummary());
+        holder.mTime.setText(String.valueOf(darkSky.getTime()));
+        holder.mHighTemp.setText(String.valueOf(darkSky.getHighTemp() + "\u2103"));
+        holder.mLowTemp.setText(String.valueOf(darkSky.getLowTemp() + "\u2103"));
+        holder.mDailySummary.setText(darkSky.getSummary());
     }
 
     @Override
@@ -51,19 +49,19 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
 
     class WeatherHolder extends RecyclerView.ViewHolder {
 
-        ImageView mIconView;
-        TextView mSummary;
-        TextView mWindSpeed;
-        TextView mTemperature;
-        TextView mVisibility;
+        TextView mWeeklySummary;
+        TextView mDailySummary;
+        TextView mHighTemp;
+        TextView mLowTemp;
+        TextView mTime;
 
         WeatherHolder(View itemView) {
             super(itemView);
-            mIconView = itemView.findViewById(R.id.iv_icon);
-            mSummary = itemView.findViewById(R.id.tv_summary);
-            mWindSpeed = itemView.findViewById(R.id.tv_windSpeed);
-            mTemperature = itemView.findViewById(R.id.tv_temperature);
-            mVisibility = itemView.findViewById(R.id.tv_visibility);
+            mWeeklySummary = itemView.findViewById(R.id.tv_weekly_summary);
+            mDailySummary = itemView.findViewById(R.id.tv_daily_summary);
+            mHighTemp = itemView.findViewById(R.id.tv_highTemp);
+            mLowTemp = itemView.findViewById(R.id.tv_lowTemp);
+            mTime = itemView.findViewById(R.id.tv_time);
         }
     }
 }

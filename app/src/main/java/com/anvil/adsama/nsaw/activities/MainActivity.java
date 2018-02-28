@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,9 +24,10 @@ import android.widget.Toast;
 
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.adapters.NewsAdapter;
+import com.anvil.adsama.nsaw.adapters.NewsPositionInterface;
 import com.anvil.adsama.nsaw.fragments.WeatherFragment;
 import com.anvil.adsama.nsaw.model.AlphaVantage;
-import com.anvil.adsama.nsaw.model.DarkSky;
+import com.anvil.adsama.nsaw.model.DarkSkyCurrent;
 import com.anvil.adsama.nsaw.model.NewsAPI;
 import com.anvil.adsama.nsaw.network.NewsAsyncTask;
 import com.anvil.adsama.nsaw.network.NewsListener;
@@ -47,7 +49,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NewsListener, StockListener, WeatherListener, SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NewsListener, StockListener, WeatherListener, NewsPositionInterface, SearchView.OnQueryTextListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String EMAIL_EXTRA = "EMAIL_EXTRA";
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     GoogleApiClient mGoogleApiClient;
     LinearLayoutManager linearLayoutManager;
     ArrayList<NewsAPI> mNewsAPIData;
-    ArrayList<DarkSky> mDarkSkyData;
+    ArrayList<DarkSkyCurrent> mDarkSkyData;
     NewsAdapter mNewsAdapter;
     WeatherFragment mWeatherFragment;
 
@@ -141,7 +143,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_news) {
 
             mToolbar.setTitle(R.string.news);
-
+            if (mWeatherFragment != null) {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.hide(mWeatherFragment);
+                fragmentTransaction.commit();
+            }
         } else if (id == R.id.nav_stock) {
 
             mToolbar.setTitle(R.string.stock);
@@ -184,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startActivity(onBoardingIntent);
                 }
             });
-
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -198,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void returnWeatherList(ArrayList<DarkSky> darkSkyList) {
+    public void returnWeatherList(ArrayList<DarkSkyCurrent> darkSkyList) {
         mDarkSkyData = new ArrayList<>();
         mDarkSkyData = darkSkyList;
     }
@@ -206,6 +211,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void returnStockList(ArrayList<AlphaVantage> alphaVantageList) {
 
+    }
+
+    @Override
+    public void getNewsPosition(int position) {
+        Toast.makeText(this, "passed position is " + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -233,18 +243,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void initialiseNews(ArrayList<NewsAPI> newsAPIArrayList) {
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mNewsAdapter = new NewsAdapter(newsAPIArrayList, this);
+        mNewsAdapter = new NewsAdapter(newsAPIArrayList, this, this);
         mNewsRecyclerView.setAdapter(mNewsAdapter);
         mNewsRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
     private void setWeatherData() {
         Bundle bundleForWeather = new Bundle();
-        bundleForWeather.putParcelableArrayList("DarkSky", mDarkSkyData);
+        bundleForWeather.putParcelableArrayList("DarkSkyCurrent", mDarkSkyData);
         if (mDarkSkyData != null) {
             mWeatherFragment = new WeatherFragment();
             mWeatherFragment.setArguments(bundleForWeather);
-            getSupportFragmentManager().beginTransaction().add(R.id.weather_fragment_container, mWeatherFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.weather_fragment_container, mWeatherFragment).commit();
         }
     }
 }

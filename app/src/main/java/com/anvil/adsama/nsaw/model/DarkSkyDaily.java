@@ -1,0 +1,140 @@
+package com.anvil.adsama.nsaw.model;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class DarkSkyDaily implements Parcelable {
+
+    public static final Parcelable.Creator<DarkSkyDaily> CREATOR = new Creator<DarkSkyDaily>() {
+
+        @Override
+        public DarkSkyDaily createFromParcel(Parcel source) {
+            DarkSkyDaily darkSkyDaily = new DarkSkyDaily();
+            darkSkyDaily.mTime = ((int) source.readValue((int.class.getClassLoader())));
+            darkSkyDaily.mWeeklySummary = ((String) source.readValue((String.class.getClassLoader())));
+            darkSkyDaily.mSummary = ((String) source.readValue((String.class.getClassLoader())));
+            darkSkyDaily.mHighTemperature = ((float) source.readValue((float.class.getClassLoader())));
+            darkSkyDaily.mLowTemperature = ((float) source.readValue((float.class.getClassLoader())));
+            darkSkyDaily.mApparentHigh = ((float) source.readValue((float.class.getClassLoader())));
+            darkSkyDaily.mApparentLow = ((float) source.readValue((float.class.getClassLoader())));
+            darkSkyDaily.mDewPoint = ((float) source.readValue((float.class.getClassLoader())));
+            darkSkyDaily.mHumidity = ((float) source.readValue((float.class.getClassLoader())));
+            darkSkyDaily.mVisibility = ((float) source.readValue((float.class.getClassLoader())));
+            return darkSkyDaily;
+        }
+
+        @Override
+        public DarkSkyDaily[] newArray(int size) {
+            return new DarkSkyDaily[size];
+        }
+    };
+
+    @SerializedName("time")
+    @Expose
+    private int mTime;
+    @SerializedName("summary")
+    @Expose
+    private String mWeeklySummary;
+    @SerializedName("summary")
+    @Expose
+    private String mSummary;
+    @SerializedName("temperatureHigh")
+    @Expose
+    private float mHighTemperature;
+    @SerializedName("temperatureLow")
+    @Expose
+    private float mLowTemperature;
+    @SerializedName("apparentTemperatureHigh")
+    @Expose
+    private float mApparentHigh;
+    @SerializedName("apparentTemperatureLow")
+    @Expose
+    private float mApparentLow;
+    @SerializedName("dewPoint")
+    @Expose
+    private float mDewPoint;
+    @SerializedName("humidity")
+    @Expose
+    private float mHumidity;
+    @SerializedName("visibility")
+    @Expose
+    private float mVisibility;
+
+    private DarkSkyDaily() {
+    }
+
+    public DarkSkyDaily(int time, String weeklySummary, String summary, float highTemp, float lowTemp, float apparentHigh, float apparentLow, float dewPoint, float humidity, float visibility) {
+        mTime = time;
+        mWeeklySummary = weeklySummary;
+        mSummary = summary;
+        mHighTemperature = highTemp;
+        mLowTemperature = lowTemp;
+        mApparentHigh = apparentHigh;
+        mApparentLow = apparentLow;
+        mDewPoint = dewPoint;
+        mHumidity = humidity;
+        mVisibility = visibility;
+    }
+
+    public int getTime() {
+        return mTime;
+    }
+
+    public String getWeeklySummary() {
+        return mWeeklySummary;
+    }
+
+    public String getSummary() {
+        return mSummary;
+    }
+
+    public float getHighTemp() {
+        return mHighTemperature;
+    }
+
+    public float getLowTemp() {
+        return mLowTemperature;
+    }
+
+    public float getApparentHigh() {
+        return mApparentHigh;
+    }
+
+    public float getApparentLow() {
+        return mApparentLow;
+    }
+
+    public float getDewPoint() {
+        return mDewPoint;
+    }
+
+    public float getHumidity() {
+        return mHumidity;
+    }
+
+    public float getVisibility() {
+        return mVisibility;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(mTime);
+        dest.writeValue(mWeeklySummary);
+        dest.writeValue(mSummary);
+        dest.writeValue(mHighTemperature);
+        dest.writeValue(mLowTemperature);
+        dest.writeValue(mApparentHigh);
+        dest.writeValue(mApparentLow);
+        dest.writeValue(mDewPoint);
+        dest.writeValue(mHumidity);
+        dest.writeValue(mVisibility);
+    }
+}

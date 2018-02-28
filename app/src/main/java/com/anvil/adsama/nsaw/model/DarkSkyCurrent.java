@@ -6,26 +6,30 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DarkSky implements Parcelable {
+import java.util.ArrayList;
 
-    public static final Parcelable.Creator<DarkSky> CREATOR = new Creator<DarkSky>() {
+public class DarkSkyCurrent implements Parcelable {
+
+    public static final Parcelable.Creator<DarkSkyCurrent> CREATOR = new Creator<DarkSkyCurrent>() {
 
         @Override
-        public DarkSky createFromParcel(Parcel source) {
-            DarkSky darkSky = new DarkSky();
+        public DarkSkyCurrent createFromParcel(Parcel source) {
+            DarkSkyCurrent darkSky = new DarkSkyCurrent();
             darkSky.mSummary = ((String) source.readValue((String.class.getClassLoader())));
             darkSky.mTemperature = ((float) source.readValue((float.class.getClassLoader())));
             darkSky.mIcon = ((String) source.readValue((String.class.getClassLoader())));
             darkSky.mWindSpeed = ((float) source.readValue((float.class.getClassLoader())));
             darkSky.mVisibility = ((float) source.readValue((float.class.getClassLoader())));
+            source.readList(darkSky.mDailyList, (com.anvil.adsama.nsaw.model.DarkSkyDaily.class.getClassLoader()));
             return darkSky;
         }
 
         @Override
-        public DarkSky[] newArray(int size) {
-            return new DarkSky[size];
+        public DarkSkyCurrent[] newArray(int size) {
+            return new DarkSkyCurrent[size];
         }
     };
+
     @SerializedName("summary")
     @Expose
     private String mSummary;
@@ -41,16 +45,20 @@ public class DarkSky implements Parcelable {
     @SerializedName("visibility")
     @Expose
     private float mVisibility;
+    @SerializedName("daily")
+    @Expose
+    private ArrayList<DarkSkyDaily> mDailyList;
 
-    private DarkSky() {
+    private DarkSkyCurrent() {
     }
 
-    public DarkSky(String summary, float temperature, String icon, float windSpeed, float visibility) {
+    public DarkSkyCurrent(String summary, float temperature, String icon, float windSpeed, float visibility, ArrayList<DarkSkyDaily> dailyData) {
         mSummary = summary;
         mTemperature = temperature;
         mIcon = icon;
         mWindSpeed = windSpeed;
         mVisibility = visibility;
+        mDailyList = dailyData;
     }
 
     public String getSummary() {
@@ -73,6 +81,10 @@ public class DarkSky implements Parcelable {
         return mVisibility;
     }
 
+    public ArrayList<DarkSkyDaily> getDailyList() {
+        return mDailyList;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -85,5 +97,6 @@ public class DarkSky implements Parcelable {
         dest.writeValue(mIcon);
         dest.writeValue(mWindSpeed);
         dest.writeValue(mVisibility);
+        dest.writeValue(mDailyList);
     }
 }

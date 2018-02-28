@@ -18,10 +18,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     private ArrayList<NewsAPI> mNewsList;
     private Context mContext;
+    private NewsPositionInterface mPositionInterface;
 
-    public NewsAdapter(ArrayList<NewsAPI> newsList, Context context) {
+    public NewsAdapter(ArrayList<NewsAPI> newsList, Context context, NewsPositionInterface positionInterface) {
         mNewsList = newsList;
         mContext = context;
+        mPositionInterface = positionInterface;
     }
 
     @Override
@@ -31,10 +33,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     }
 
     @Override
-    public void onBindViewHolder(NewsHolder holder, int position) {
+    public void onBindViewHolder(final NewsHolder holder, int position) {
         NewsAPI newsAPI = mNewsList.get(position);
         holder.mNewsTitle.setText(newsAPI.getTitle());
-        Picasso.with(mContext).load(newsAPI.getImageUrl()).error(R.drawable.news_nav).into(holder.mNewsImage);
+        if (newsAPI.getImageUrl().isEmpty()) {
+            holder.mNewsImage.setImageResource(R.drawable.news_nav);
+        } else {
+            Picasso.with(mContext).load(newsAPI.getImageUrl()).into(holder.mNewsImage);
+        }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPositionInterface.getNewsPosition(holder.getAdapterPosition());
+            }
+        });
     }
 
     @Override
