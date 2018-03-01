@@ -14,7 +14,6 @@ public class DarkSkyDaily implements Parcelable {
         public DarkSkyDaily createFromParcel(Parcel source) {
             DarkSkyDaily darkSkyDaily = new DarkSkyDaily();
             darkSkyDaily.mTime = ((int) source.readValue((int.class.getClassLoader())));
-            darkSkyDaily.mWeeklySummary = ((String) source.readValue((String.class.getClassLoader())));
             darkSkyDaily.mSummary = ((String) source.readValue((String.class.getClassLoader())));
             darkSkyDaily.mHighTemperature = ((float) source.readValue((float.class.getClassLoader())));
             darkSkyDaily.mLowTemperature = ((float) source.readValue((float.class.getClassLoader())));
@@ -35,9 +34,6 @@ public class DarkSkyDaily implements Parcelable {
     @SerializedName("time")
     @Expose
     private int mTime;
-    @SerializedName("summary")
-    @Expose
-    private String mWeeklySummary;
     @SerializedName("summary")
     @Expose
     private String mSummary;
@@ -66,9 +62,8 @@ public class DarkSkyDaily implements Parcelable {
     private DarkSkyDaily() {
     }
 
-    public DarkSkyDaily(int time, String weeklySummary, String summary, float highTemp, float lowTemp, float apparentHigh, float apparentLow, float dewPoint, float humidity, float visibility) {
+    public DarkSkyDaily(int time, String summary, float highTemp, float lowTemp, float apparentHigh, float apparentLow, float dewPoint, float humidity, float visibility) {
         mTime = time;
-        mWeeklySummary = weeklySummary;
         mSummary = summary;
         mHighTemperature = highTemp;
         mLowTemperature = lowTemp;
@@ -83,9 +78,6 @@ public class DarkSkyDaily implements Parcelable {
         return mTime;
     }
 
-    public String getWeeklySummary() {
-        return mWeeklySummary;
-    }
 
     public String getSummary() {
         return mSummary;
@@ -127,7 +119,6 @@ public class DarkSkyDaily implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(mTime);
-        dest.writeValue(mWeeklySummary);
         dest.writeValue(mSummary);
         dest.writeValue(mHighTemperature);
         dest.writeValue(mLowTemperature);

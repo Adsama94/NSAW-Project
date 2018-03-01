@@ -40,6 +40,8 @@ public class WeatherFragment extends android.support.v4.app.Fragment {
     TextView mTemperature;
     @BindView(R.id.tv_summary)
     TextView mSummary;
+    @BindView(R.id.tv_weekly_summary)
+    TextView mWeeklySummary;
 
     public WeatherFragment() {
     }
@@ -66,6 +68,7 @@ public class WeatherFragment extends android.support.v4.app.Fragment {
         mTemperature.setText(String.valueOf(mWeatherData.getTemperature()));
         mWindSpeed.setText(String.valueOf(mWeatherData.getWindSpeed()));
         mVisibility.setText(String.valueOf(mWeatherData.getVisibility()));
+        mWeeklySummary.setText(mWeatherData.getWeeklySummary());
         initialiseWeather(mWeatherDailyList);
         return rootView;
     }

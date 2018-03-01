@@ -20,6 +20,7 @@ public class DarkSkyCurrent implements Parcelable {
             darkSky.mIcon = ((String) source.readValue((String.class.getClassLoader())));
             darkSky.mWindSpeed = ((float) source.readValue((float.class.getClassLoader())));
             darkSky.mVisibility = ((float) source.readValue((float.class.getClassLoader())));
+            darkSky.mWeeklySummary = ((String) source.readValue((String.class.getClassLoader())));
             source.readList(darkSky.mDailyList, (com.anvil.adsama.nsaw.model.DarkSkyDaily.class.getClassLoader()));
             return darkSky;
         }
@@ -45,6 +46,9 @@ public class DarkSkyCurrent implements Parcelable {
     @SerializedName("visibility")
     @Expose
     private float mVisibility;
+    @SerializedName("summary")
+    @Expose
+    private String mWeeklySummary;
     @SerializedName("daily")
     @Expose
     private ArrayList<DarkSkyDaily> mDailyList;
@@ -52,8 +56,9 @@ public class DarkSkyCurrent implements Parcelable {
     private DarkSkyCurrent() {
     }
 
-    public DarkSkyCurrent(String summary, float temperature, String icon, float windSpeed, float visibility, ArrayList<DarkSkyDaily> dailyData) {
+    public DarkSkyCurrent(String summary, float temperature, String icon, float windSpeed, float visibility, String weeklySummary, ArrayList<DarkSkyDaily> dailyData) {
         mSummary = summary;
+        mWeeklySummary = weeklySummary;
         mTemperature = temperature;
         mIcon = icon;
         mWindSpeed = windSpeed;
@@ -63,6 +68,10 @@ public class DarkSkyCurrent implements Parcelable {
 
     public String getSummary() {
         return mSummary;
+    }
+
+    public String getWeeklySummary() {
+        return mWeeklySummary;
     }
 
     public float getTemperature() {
@@ -97,6 +106,7 @@ public class DarkSkyCurrent implements Parcelable {
         dest.writeValue(mIcon);
         dest.writeValue(mWindSpeed);
         dest.writeValue(mVisibility);
+        dest.writeValue(mWeeklySummary);
         dest.writeValue(mDailyList);
     }
 }

@@ -6,21 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/textWhite"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/tv_weekly_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/patua_one"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="CLEAR WEATHER THROUGH THE WEEK" />
+    android:orientation="vertical"
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/tv_high"
@@ -56,12 +43,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/patua_one"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_weekly_summary"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="4\u2103" />
 
     <TextView
@@ -79,29 +66,28 @@
         tools:text="-9\u2103" />
 
     <TextView
-        android:id="@+id/tv_daily_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="180dp"
-        android:fontFamily="@font/patua_one"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_weekly_summary"
-        tools:text="SNOWY AND COLD" />
-
-    <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="30dp"
         android:fontFamily="@font/patua_one"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_weekly_summary"
+        app:layout_constraintTop_toTopOf="@+id/tv_highTemp"
         tools:text="13th MARCH, WEDNESDAY" />
+
+    <TextView
+        android:id="@+id/tv_daily_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="80dp"
+        android:fontFamily="@font/patua_one"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintStart_toEndOf="@+id/tv_low"
+        app:layout_constraintTop_toBottomOf="@+id/tv_time"
+        tools:text="SNOWY AND COLD" />
 
 </android.support.constraint.ConstraintLayout>

@@ -48,9 +48,9 @@ public class WeatherAsyncTask extends AsyncTask<Void, Void, ArrayList<DarkSkyCur
                     float dewPoint = (float) currentDailyData.getInt("dewPoint");
                     float humidity = (float) currentDailyData.getInt("humidity");
                     float dailyVisibility = (float) currentDailyData.getInt("visibility");
-                    DarkSkyDaily darkSkyDaily = new DarkSkyDaily(time, weeklySummary, dailySummary, highTemp, lowTemp, apparentHigh, apparentLow, dewPoint, humidity, dailyVisibility);
+                    DarkSkyDaily darkSkyDaily = new DarkSkyDaily(time, dailySummary, highTemp, lowTemp, apparentHigh, apparentLow, dewPoint, humidity, dailyVisibility);
                     weatherDailyList.add(darkSkyDaily);
-                    DarkSkyCurrent darkSky = new DarkSkyCurrent(summary, temperature, icon, windSpeed, visibility, weatherDailyList);
+                    DarkSkyCurrent darkSky = new DarkSkyCurrent(summary, temperature, icon, windSpeed, visibility, weeklySummary, weatherDailyList);
                     weatherList.add(darkSky);
                 }
             }

@@ -31,7 +31,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
     @Override
     public void onBindViewHolder(WeatherHolder holder, int position) {
         DarkSkyDaily darkSky = mWeatherList.get(position);
-        holder.mWeeklySummary.setText(darkSky.getWeeklySummary());
         holder.mTime.setText(String.valueOf(darkSky.getTime()));
         holder.mHighTemp.setText(String.valueOf(darkSky.getHighTemp() + "\u2103"));
         holder.mLowTemp.setText(String.valueOf(darkSky.getLowTemp() + "\u2103"));
@@ -49,7 +48,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
 
     class WeatherHolder extends RecyclerView.ViewHolder {
 
-        TextView mWeeklySummary;
         TextView mDailySummary;
         TextView mHighTemp;
         TextView mLowTemp;
@@ -57,7 +55,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
 
         WeatherHolder(View itemView) {
             super(itemView);
-            mWeeklySummary = itemView.findViewById(R.id.tv_weekly_summary);
             mDailySummary = itemView.findViewById(R.id.tv_daily_summary);
             mHighTemp = itemView.findViewById(R.id.tv_highTemp);
             mLowTemp = itemView.findViewById(R.id.tv_lowTemp);
