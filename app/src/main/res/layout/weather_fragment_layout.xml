@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/textWhite"
     android:focusable="true"
-    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout
@@ -100,7 +99,7 @@
         android:id="@+id/recycler_weather"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listItem="@layout/weather_list_item">
+        tools:listItem="@layout/weather_daily_item">
 
     </android.support.v7.widget.RecyclerView>
 </LinearLayout>
