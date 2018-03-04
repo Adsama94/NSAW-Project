@@ -31,6 +31,7 @@ import com.anvil.adsama.nsaw.model.DarkSkyCurrent;
 import com.anvil.adsama.nsaw.model.NewsAPI;
 import com.anvil.adsama.nsaw.network.NewsAsyncTask;
 import com.anvil.adsama.nsaw.network.NewsListener;
+import com.anvil.adsama.nsaw.network.NewsParser;
 import com.anvil.adsama.nsaw.network.StockListener;
 import com.anvil.adsama.nsaw.network.WeatherAsyncTask;
 import com.anvil.adsama.nsaw.network.WeatherListener;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         newsRequest.execute();
         WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask(this);
         weatherAsyncTask.execute();
+        makeNewsSearch("Delhi");
     }
 
     @Override
@@ -220,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return false;
+        return true;
     }
 
     @Override
@@ -256,5 +258,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mWeatherFragment.setArguments(bundleForWeather);
             getSupportFragmentManager().beginTransaction().replace(R.id.weather_fragment_container, mWeatherFragment).commit();
         }
+    }
+
+    private void makeNewsSearch(String search) {
+        String queryUrl = "https://newsapi.org/v2/everything?q=" + search + "&amp;language=en&amp;pageSize=40&amp;sortBy=publishedAt&amp;apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
+        NewsParser newsParser = new NewsParser();
+        newsParser.makeNewsQuery(queryUrl);
     }
 }

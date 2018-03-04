@@ -36,7 +36,6 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 }
             }, SPLASH_TIME_OUT);
-
         }
     }
 
@@ -64,5 +63,6 @@ public class SplashActivity extends AppCompatActivity {
     private void launchOnBoard() {
         Intent onBoardIntent = new Intent(getApplicationContext(), OnBoardingActivity.class);
         startActivity(onBoardIntent);
+        finish();
     }
 }

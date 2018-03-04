@@ -30,11 +30,11 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, ArrayList<NewsAPI>> {
                 ArrayList<NewsAPI> newsApiList = new ArrayList<>();
                 for (int j = 0; j < articleArray.length(); j++) {
                     JSONObject currentNewsItem = articleArray.getJSONObject(j);
-                    String authorName = currentNewsItem.getString("author");
-                    String title = currentNewsItem.getString("title");
-                    String description = currentNewsItem.getString("description");
-                    String imageUrl = currentNewsItem.getString("urlToImage");
-                    String date = currentNewsItem.getString("publishedAt");
+                    String authorName = currentNewsItem.optString("author");
+                    String title = currentNewsItem.optString("title");
+                    String description = currentNewsItem.optString("description");
+                    String imageUrl = currentNewsItem.optString("urlToImage");
+                    String date = currentNewsItem.optString("publishedAt");
                     NewsAPI newsAPI = new NewsAPI(authorName, title, description, imageUrl, date);
                     newsApiList.add(newsAPI);
                     newsApiList = newsList;
