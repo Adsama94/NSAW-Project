@@ -24,7 +24,6 @@
     <string name="log_out">Log Out</string>
     <string name="location">Location</string>
     <string name="search">Search</string>
-    <string name="newsURL">https://newsapi.org/v2/everything?q=bitcoin&amp;language=en&amp;pageSize=40&amp;sortBy=publishedAt&amp;apiKey=f89ab3ddfae84bd8866a8d7d26d961f1</string>
     <string name="low">Low</string>
     <string name="high">High</string>
 </resources>

@@ -53,10 +53,6 @@ public class NewsAPI implements Parcelable {
         mDate = date;
     }
 
-    public String getAuthorName() {
-        return mAuthorName;
-    }
-
     public String getTitle() {
         return mTitle;
     }

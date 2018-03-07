@@ -11,23 +11,23 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class NewsAsyncTask extends AsyncTask<Void, Void, ArrayList<NewsAPI>> {
+public class NewsSearchTask extends AsyncTask<Void, Void, ArrayList<NewsAPI>> {
 
-    private static final String LOG_TAG = NewsAsyncTask.class.getSimpleName();
+    private static final String LOG_TAG = NewsSearchTask.class.getSimpleName();
     private NewsListener mNewsListener;
     private ArrayList<NewsAPI> newsList = new ArrayList<>();
 
-    public NewsAsyncTask(NewsListener newsListener) {
+    public NewsSearchTask(NewsListener newsListener) {
         mNewsListener = newsListener;
     }
 
     @Override
     protected ArrayList<NewsAPI> doInBackground(Void... voids) {
         NewsParser newsParser = new NewsParser();
-        JSONObject newsData = newsParser.getNewsData();
-        if (newsData != null) {
+        JSONObject searchData = newsParser.getNewsSearch();
+        if (searchData != null) {
             try {
-                JSONArray articleArray = newsData.getJSONArray("articles");
+                JSONArray articleArray = searchData.getJSONArray("articles");
                 ArrayList<NewsAPI> newsApiList = new ArrayList<>();
                 for (int j = 0; j < articleArray.length(); j++) {
                     JSONObject currentNewsItem = articleArray.getJSONObject(j);
@@ -43,7 +43,7 @@ public class NewsAsyncTask extends AsyncTask<Void, Void, ArrayList<NewsAPI>> {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.e(LOG_TAG, "Error occurred fetching news data " + e.getMessage());
+                Log.e(LOG_TAG, "Error occurred fetching searched news data " + e.getMessage());
             }
         }
         return newsList;

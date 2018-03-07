@@ -18,7 +18,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +30,7 @@ import com.anvil.adsama.nsaw.model.DarkSkyCurrent;
 import com.anvil.adsama.nsaw.model.NewsAPI;
 import com.anvil.adsama.nsaw.network.NewsAsyncTask;
 import com.anvil.adsama.nsaw.network.NewsListener;
-import com.anvil.adsama.nsaw.network.NewsParser;
+import com.anvil.adsama.nsaw.network.NewsSearchTask;
 import com.anvil.adsama.nsaw.network.StockListener;
 import com.anvil.adsama.nsaw.network.WeatherAsyncTask;
 import com.anvil.adsama.nsaw.network.WeatherListener;
@@ -50,7 +49,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NewsListener, StockListener, WeatherListener, NewsPositionInterface, SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NewsListener, StockListener, WeatherListener, NewsPositionInterface {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String EMAIL_EXTRA = "EMAIL_EXTRA";
@@ -77,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<DarkSkyCurrent> mDarkSkyData;
     NewsAdapter mNewsAdapter;
     WeatherFragment mWeatherFragment;
+    android.support.v7.widget.SearchView mSearchView;
+    private String searchText;
 
 
     @Override
@@ -97,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         newsRequest.execute();
         WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask(this);
         weatherAsyncTask.execute();
-        makeNewsSearch("Delhi");
     }
 
     @Override
@@ -121,6 +121,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        mSearchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
+        mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchText = query;
+                NewsSearchTask newsSearchTask = new NewsSearchTask(MainActivity.this);
+                newsSearchTask.execute();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
 
@@ -139,11 +155,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_news) {
-
             mToolbar.setTitle(R.string.news);
             if (mWeatherFragment != null) {
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -151,26 +164,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentTransaction.commit();
             }
         } else if (id == R.id.nav_stock) {
-
             mToolbar.setTitle(R.string.stock);
-
         } else if (id == R.id.nav_weather) {
-
             mToolbar.setTitle(R.string.weather);
-//            mNewsLayout.setVisibility(View.GONE);
             setWeatherData();
-
         } else if (id == R.id.nav_bookmark) {
-
             mToolbar.setTitle(R.string.bookmarks);
-
         } else if (id == R.id.nav_settings) {
-
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
-
         } else if (id == R.id.nav_rating) {
-
             Uri uri = Uri.parse("market://details?id=" + getApplicationContext().getPackageName());
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             // To count with Play market backstack, After pressing back button,
@@ -181,9 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } catch (ActivityNotFoundException e) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
             }
-
         } else if (id == R.id.nav_logout) {
-
             Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(@NonNull Status status) {
@@ -220,16 +221,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toast.makeText(this, "passed position is " + position, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
-
     private void setNavDrawer() {
         View headerView = mNavigationView.getHeaderView(0);
         mProfileImageView = headerView.findViewById(R.id.cv_profileImage);
@@ -260,9 +251,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void makeNewsSearch(String search) {
-        String queryUrl = "https://newsapi.org/v2/everything?q=" + search + "&amp;language=en&amp;pageSize=40&amp;sortBy=publishedAt&amp;apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
-        NewsParser newsParser = new NewsParser();
-        newsParser.makeNewsQuery(queryUrl);
+    public String makeSearchUrl() {
+        return "https://newsapi.org/v2/everything?q=" + searchText + "&language=en&pageSize=30&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
     }
 }

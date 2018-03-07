@@ -39,7 +39,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         if (newsAPI.getImageUrl().isEmpty()) {
             holder.mNewsImage.setImageResource(R.drawable.news_nav);
         } else {
-            Picasso.with(mContext).load(newsAPI.getImageUrl()).into(holder.mNewsImage);
+            Picasso.with(mContext).load(newsAPI.getImageUrl()).error(R.drawable.ic_error_image).into(holder.mNewsImage);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
