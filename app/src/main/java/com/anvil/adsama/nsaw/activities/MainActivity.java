@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.adapters.NewsAdapter;
 import com.anvil.adsama.nsaw.adapters.NewsPositionInterface;
@@ -128,7 +129,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onQueryTextSubmit(String query) {
                 searchText = query;
                 NewsSearchTask newsSearchTask = new NewsSearchTask(MainActivity.this);
-                newsSearchTask.execute();
+                newsSearchTask.execute(makeSearchUrl());
+                mNewsAdapter.notifyDataSetChanged();
+                LottieAnimationView lottieAnimationView = findViewById(R.id.spider_loader);
+                lottieAnimationView.setVisibility(View.VISIBLE);
+                lottieAnimationView.playAnimation();
                 return true;
             }
 

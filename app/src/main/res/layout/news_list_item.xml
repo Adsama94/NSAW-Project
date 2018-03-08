@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
     android:orientation="vertical">
 
     <ImageView
@@ -20,10 +19,13 @@
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:background="@color/colorPrimary"
-        android:fontFamily="@font/droid_sans"
-        android:maxLines="2"
-        android:padding="2dp"
+        android:fontFamily="@font/patua_one"
+        android:maxLines="4"
+        android:paddingBottom="4dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
         android:textColor="@color/textWhite"
-        android:textSize="18sp"
-        tools:text="TEST STATEMENT WORTH THREE LINES LETS SEE HOW MANY GET CUT OFF" />
+        android:textSize="14sp"
+        tools:text="TEST STATEMENT WORTH THREE LINES LETS SEE HOW MANY GET CUT  ASFASF ASDASDASDASD AS" />
 </LinearLayout>

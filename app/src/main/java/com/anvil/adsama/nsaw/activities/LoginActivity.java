@@ -1,6 +1,7 @@
 package com.anvil.adsama.nsaw.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,12 +24,12 @@ import butterknife.ButterKnife;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
+    public static final String PREFS_NAME = "LoginCheck";
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
     private static final String EMAIL_EXTRA = "EMAIL_EXTRA";
     private static final String URL_EXTRA = "URL_EXTRA";
     private static final String NAME_EXTRA = "NAME_EXTRA";
     private static final int RC_SIGN_IN = 0;
-
     @BindView(R.id.google_button)
     SignInButton mGoogleButton;
 
@@ -91,17 +92,26 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private void handleResult(@NonNull GoogleSignInResult result) {
         if (result.isSuccess()) {
             GoogleSignInAccount signInAccount = result.getSignInAccount();
-            String accountName = signInAccount.getDisplayName();
-            String accountEmail = signInAccount.getEmail();
-            String accountUrl = String.valueOf(signInAccount.getPhotoUrl());
-            mGoogleButton.setEnabled(false);
-            Toast.makeText(this, "Welcome " + accountName, Toast.LENGTH_SHORT).show();
-            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-            mainIntent.putExtra(NAME_EXTRA, accountName);
-            mainIntent.putExtra(EMAIL_EXTRA, accountEmail);
-            mainIntent.putExtra(URL_EXTRA, accountUrl);
-            startActivity(mainIntent);
-            finish();
+            if (signInAccount != null) {
+                String accountName = signInAccount.getDisplayName();
+                String accountEmail = signInAccount.getEmail();
+                String accountUrl = String.valueOf(signInAccount.getPhotoUrl());
+                mGoogleButton.setEnabled(false);
+                Toast.makeText(this, "Welcome " + accountName, Toast.LENGTH_SHORT).show();
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                mainIntent.putExtra(NAME_EXTRA, accountName);
+                mainIntent.putExtra(EMAIL_EXTRA, accountEmail);
+                mainIntent.putExtra(URL_EXTRA, accountUrl);
+                startActivity(mainIntent);
+                SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean("LoginSuccess", true);
+                editor.putString("loginName", accountName);
+                editor.putString("loginAccount", accountEmail);
+                editor.putString("loginUrl", accountUrl);
+                editor.apply();
+                finish();
+            }
         }
     }
 }

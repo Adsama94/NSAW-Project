@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -32,7 +33,7 @@ public class SplashActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    launchOnBoard();
+                    startActivity();
                     finish();
                 }
             }, SPLASH_TIME_OUT);
@@ -51,7 +52,7 @@ public class SplashActivity extends AppCompatActivity {
             });
             builder.setNegativeButton("Offline Mode", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    launchOnBoard();
+                    startActivity();
                 }
             });
             this.mInternetDialog = builder.create();
@@ -60,9 +61,23 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    private void launchOnBoard() {
-        Intent onBoardIntent = new Intent(getApplicationContext(), OnBoardingActivity.class);
-        startActivity(onBoardIntent);
-        finish();
+    private void startActivity() {
+        SharedPreferences preferences = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+        boolean isLoginSuccess = preferences.getBoolean("LoginSuccess", false);
+        String loginName = preferences.getString("loginName", "");
+        String loginAccount = preferences.getString("loginAccount", "");
+        String loginUrl = preferences.getString("loginUrl", "");
+        if (isLoginSuccess) {
+            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+            mainIntent.putExtra("NAME_EXTRA", loginName);
+            mainIntent.putExtra("EMAIL_EXTRA", loginAccount);
+            mainIntent.putExtra("URL_EXTRA", loginUrl);
+            startActivity(mainIntent);
+            finish();
+        } else {
+            Intent onBoardIntent = new Intent(getApplicationContext(), OnBoardingActivity.class);
+            startActivity(onBoardIntent);
+            finish();
+        }
     }
 }

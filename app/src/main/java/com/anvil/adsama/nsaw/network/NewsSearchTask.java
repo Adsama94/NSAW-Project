@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class NewsSearchTask extends AsyncTask<Void, Void, ArrayList<NewsAPI>> {
+public class NewsSearchTask extends AsyncTask<String, Void, ArrayList<NewsAPI>> {
 
     private static final String LOG_TAG = NewsSearchTask.class.getSimpleName();
     private NewsListener mNewsListener;
@@ -22,9 +22,9 @@ public class NewsSearchTask extends AsyncTask<Void, Void, ArrayList<NewsAPI>> {
     }
 
     @Override
-    protected ArrayList<NewsAPI> doInBackground(Void... voids) {
+    protected ArrayList<NewsAPI> doInBackground(String... voids) {
         NewsParser newsParser = new NewsParser();
-        JSONObject searchData = newsParser.getNewsSearch();
+        JSONObject searchData = newsParser.getNewsSearch(voids[0]);
         if (searchData != null) {
             try {
                 JSONArray articleArray = searchData.getJSONArray("articles");
