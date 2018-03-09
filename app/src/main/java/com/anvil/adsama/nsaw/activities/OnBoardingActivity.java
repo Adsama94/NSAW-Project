@@ -12,6 +12,7 @@ import com.anvil.adsama.nsaw.adapters.OnBoardingAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.relex.circleindicator.CircleIndicator;
 
 public class OnBoardingActivity extends AppCompatActivity {
 
@@ -19,6 +20,8 @@ public class OnBoardingActivity extends AppCompatActivity {
     ViewPager mFeaturePager;
     @BindView(R.id.tv_onBoard)
     TextView mOnBoardTextView;
+    @BindView(R.id.indicator)
+    CircleIndicator mCircleIndicator;
     OnBoardingAdapter mPagerAdapter;
 
     @Override
@@ -33,6 +36,7 @@ public class OnBoardingActivity extends AppCompatActivity {
     public void initPager() {
         mPagerAdapter = new OnBoardingAdapter(this);
         mFeaturePager.setAdapter(mPagerAdapter);
+        mCircleIndicator.setViewPager(mFeaturePager);
     }
 
     public void initButton() {
