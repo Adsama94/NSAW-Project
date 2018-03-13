@@ -33,13 +33,13 @@ public class OnBoardingActivity extends AppCompatActivity {
         initButton();
     }
 
-    public void initPager() {
+    private void initPager() {
         mPagerAdapter = new OnBoardingAdapter(this);
         mFeaturePager.setAdapter(mPagerAdapter);
         mCircleIndicator.setViewPager(mFeaturePager);
     }
 
-    public void initButton() {
+    private void initButton() {
         mOnBoardTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

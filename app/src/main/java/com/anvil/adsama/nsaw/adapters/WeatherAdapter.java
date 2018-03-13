@@ -11,6 +11,7 @@ import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.model.DarkSkyDaily;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherHolder> {
 
@@ -31,7 +32,11 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
     @Override
     public void onBindViewHolder(WeatherHolder holder, int position) {
         DarkSkyDaily darkSky = mWeatherList.get(position);
-        holder.mTime.setText(String.valueOf(darkSky.getTime()));
+        Long epochTime = darkSky.getTime();
+        Date date = new Date(epochTime * 1000);
+        String passedDate = String.valueOf(date);
+        String actualDate = passedDate.substring(0, 11);
+        holder.mTime.setText(String.valueOf(actualDate));
         holder.mHighTemp.setText(String.valueOf(darkSky.getHighTemp() + "\u2103"));
         holder.mLowTemp.setText(String.valueOf(darkSky.getLowTemp() + "\u2103"));
         holder.mDailySummary.setText(darkSky.getSummary());

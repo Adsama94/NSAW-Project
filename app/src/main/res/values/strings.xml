@@ -26,4 +26,11 @@
     <string name="search">Search</string>
     <string name="low">Low</string>
     <string name="high">High</string>
+    <string name="login_background_image">login background image</string>
+    <string name="login_logo_image">login logo image</string>
+    <string name="the_week_ahead">THE WEEK AHEAD</string>
+    <string name="currently">CURRENTLY</string>
+    <string name="summary">SUMMARY</string>
+    <string name="visibility">VISIBILITY</string>
+    <string name="wind_speed">WIND SPEED</string>
 </resources>

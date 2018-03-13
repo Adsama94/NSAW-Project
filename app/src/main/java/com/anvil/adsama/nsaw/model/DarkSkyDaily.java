@@ -13,7 +13,7 @@ public class DarkSkyDaily implements Parcelable {
         @Override
         public DarkSkyDaily createFromParcel(Parcel source) {
             DarkSkyDaily darkSkyDaily = new DarkSkyDaily();
-            darkSkyDaily.mTime = ((int) source.readValue((int.class.getClassLoader())));
+            darkSkyDaily.mTime = ((long) source.readValue((long.class.getClassLoader())));
             darkSkyDaily.mSummary = ((String) source.readValue((String.class.getClassLoader())));
             darkSkyDaily.mHighTemperature = ((float) source.readValue((float.class.getClassLoader())));
             darkSkyDaily.mLowTemperature = ((float) source.readValue((float.class.getClassLoader())));
@@ -33,7 +33,7 @@ public class DarkSkyDaily implements Parcelable {
 
     @SerializedName("time")
     @Expose
-    private int mTime;
+    private long mTime;
     @SerializedName("summary")
     @Expose
     private String mSummary;
@@ -62,7 +62,7 @@ public class DarkSkyDaily implements Parcelable {
     private DarkSkyDaily() {
     }
 
-    public DarkSkyDaily(int time, String summary, float highTemp, float lowTemp, float apparentHigh, float apparentLow, float dewPoint, float humidity, float visibility) {
+    public DarkSkyDaily(long time, String summary, float highTemp, float lowTemp, float apparentHigh, float apparentLow, float dewPoint, float humidity, float visibility) {
         mTime = time;
         mSummary = summary;
         mHighTemperature = highTemp;
@@ -74,7 +74,7 @@ public class DarkSkyDaily implements Parcelable {
         mVisibility = visibility;
     }
 
-    public int getTime() {
+    public long getTime() {
         return mTime;
     }
 

@@ -57,7 +57,6 @@ public class WeatherFragment extends android.support.v4.app.Fragment {
             mWeatherDailyList = mWeatherCurrentList.get(0).getDailyList();
     }
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.weather_fragment_layout, container, false);
@@ -78,5 +77,6 @@ public class WeatherFragment extends android.support.v4.app.Fragment {
         mWeatherAdapter = new WeatherAdapter(weatherAPIArrayList, getContext());
         mWeatherRecyclerView.setAdapter(mWeatherAdapter);
         mWeatherRecyclerView.setLayoutManager(linearLayoutManager);
+        mWeatherRecyclerView.setNestedScrollingEnabled(false);
     }
 }
