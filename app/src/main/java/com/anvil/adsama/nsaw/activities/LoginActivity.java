@@ -1,10 +1,15 @@
 package com.anvil.adsama.nsaw.activities;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -30,9 +35,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final String URL_EXTRA = "URL_EXTRA";
     private static final String NAME_EXTRA = "NAME_EXTRA";
     private static final int RC_SIGN_IN = 0;
+    private static final int RC_ACCOUNTS = 7010;
     @BindView(R.id.google_button)
     SignInButton mGoogleButton;
-
+    AlertDialog mAccountsDialog;
     GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -48,6 +54,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onStart() {
         super.onStart();
+        showPopUp();
         mGoogleApiClient.connect();
     }
 
@@ -86,6 +93,35 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleResult(result);
+        }
+    }
+
+    private void checkAccountsPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.GET_ACCOUNTS
+            }, RC_ACCOUNTS);
+        }
+    }
+
+    private void showPopUp() {
+        if (this.mAccountsDialog == null || !this.mAccountsDialog.isShowing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Unable to access accounts!");
+            builder.setMessage("NSAW needs user data to give personalised information.\nPlease enable contacts permissions.");
+            builder.setPositiveButton("ACCEPT", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    checkAccountsPermission();
+                }
+            });
+            builder.setNegativeButton("DENY", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(LoginActivity.this, "PERMISSION NOT GIVEN!", Toast.LENGTH_SHORT).show();
+                }
+            });
+            this.mAccountsDialog = builder.create();
+            this.mAccountsDialog.setCancelable(false);
+            builder.show();
         }
     }
 

@@ -10,19 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.adapters.WeatherAdapter;
+import com.anvil.adsama.nsaw.adapters.WeatherPositionInterface;
 import com.anvil.adsama.nsaw.model.DarkSkyCurrent;
 import com.anvil.adsama.nsaw.model.DarkSkyDaily;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class WeatherFragment extends android.support.v4.app.Fragment {
+public class WeatherFragment extends android.support.v4.app.Fragment implements WeatherPositionInterface {
 
     @BindView(R.id.recycler_weather)
     RecyclerView mWeatherRecyclerView;
@@ -62,11 +63,11 @@ public class WeatherFragment extends android.support.v4.app.Fragment {
         View rootView = inflater.inflate(R.layout.weather_fragment_layout, container, false);
         ButterKnife.bind(this, rootView);
         mWeatherData = mWeatherCurrentList.get(0);
-        Picasso.with(getContext()).load(mWeatherData.getIcon()).placeholder(R.drawable.weather_nav).into(mIcon);
+        setWeatherIcon();
         mSummary.setText(mWeatherData.getSummary());
-        mTemperature.setText(String.valueOf(mWeatherData.getTemperature()));
-        mWindSpeed.setText(String.valueOf(mWeatherData.getWindSpeed()));
-        mVisibility.setText(String.valueOf(mWeatherData.getVisibility()));
+        mTemperature.setText(String.valueOf(mWeatherData.getTemperature() + " \u2103"));
+        mWindSpeed.setText(String.valueOf(mWeatherData.getWindSpeed() + " m/s"));
+        mVisibility.setText(String.valueOf(mWeatherData.getVisibility() + " Km"));
         mWeeklySummary.setText(mWeatherData.getWeeklySummary());
         initialiseWeather(mWeatherDailyList);
         return rootView;
@@ -74,9 +75,33 @@ public class WeatherFragment extends android.support.v4.app.Fragment {
 
     private void initialiseWeather(ArrayList<DarkSkyDaily> weatherAPIArrayList) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mWeatherAdapter = new WeatherAdapter(weatherAPIArrayList, getContext());
+        mWeatherAdapter = new WeatherAdapter(weatherAPIArrayList, getContext(), this);
         mWeatherRecyclerView.setAdapter(mWeatherAdapter);
         mWeatherRecyclerView.setLayoutManager(linearLayoutManager);
         mWeatherRecyclerView.setNestedScrollingEnabled(false);
+    }
+
+    private void setWeatherIcon() {
+        String weatherIconData = mWeatherData.getSummary();
+        if (weatherIconData.contains("rain")) {
+            mIcon.setImageResource(R.drawable.ic_rainy);
+        } else if (weatherIconData.contains("Clear")) {
+            mIcon.setImageResource(R.drawable.ic_sunny);
+        } else if (weatherIconData.contains("cloudy")) {
+            mIcon.setImageResource(R.drawable.ic_cloudy);
+        } else if (weatherIconData.contains("snow")) {
+            mIcon.setImageResource(R.drawable.ic_snowflake);
+        } else if (weatherIconData.contains("thunder")) {
+            mIcon.setImageResource(R.drawable.ic_lightning);
+        } else if (weatherIconData.contains("partly sunny")) {
+            mIcon.setImageResource(R.drawable.ic_partly_sunny);
+        } else if (weatherIconData.contains("showers")) {
+            mIcon.setImageResource(R.drawable.ic_showers);
+        }
+    }
+
+    @Override
+    public void getWeatherPosition(int position) {
+        Toast.makeText(getContext(), "Position clicked is " + position, Toast.LENGTH_SHORT).show();
     }
 }

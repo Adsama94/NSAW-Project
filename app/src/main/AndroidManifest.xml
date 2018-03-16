@@ -5,7 +5,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -46,7 +47,19 @@
             android:name=".activities.SettingsActivity"
             android:label="@string/action_settings"
             android:parentActivityName=".activities.MainActivity" />
-        <activity android:name=".activities.DetailActivity" />
+        <activity
+            android:name=".activities.DetailActivity"
+            android:parentActivityName=".activities.MainActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDqUQejNYM8SfBGUZiQWgWwb9oOiYRMX-M" />
+
+        <receiver android:name=".network.ConnectivityReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

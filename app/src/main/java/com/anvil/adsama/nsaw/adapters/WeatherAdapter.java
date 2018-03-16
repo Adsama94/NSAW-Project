@@ -17,10 +17,12 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
 
     private ArrayList<DarkSkyDaily> mWeatherList;
     private Context mContext;
+    private WeatherPositionInterface mPositionInterface;
 
-    public WeatherAdapter(ArrayList<DarkSkyDaily> weatherList, Context context) {
+    public WeatherAdapter(ArrayList<DarkSkyDaily> weatherList, Context context, WeatherPositionInterface positionInterface) {
         mWeatherList = weatherList;
         mContext = context;
+        mPositionInterface = positionInterface;
     }
 
     @Override
@@ -30,16 +32,22 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
     }
 
     @Override
-    public void onBindViewHolder(WeatherHolder holder, int position) {
+    public void onBindViewHolder(final WeatherHolder holder, final int position) {
         DarkSkyDaily darkSky = mWeatherList.get(position);
         Long epochTime = darkSky.getTime();
         Date date = new Date(epochTime * 1000);
         String passedDate = String.valueOf(date);
         String actualDate = passedDate.substring(0, 11);
         holder.mTime.setText(String.valueOf(actualDate));
-        holder.mHighTemp.setText(String.valueOf(darkSky.getHighTemp() + "\u2103"));
-        holder.mLowTemp.setText(String.valueOf(darkSky.getLowTemp() + "\u2103"));
+        holder.mHighTemp.setText(String.valueOf(darkSky.getHighTemp() + " \u2103"));
+        holder.mLowTemp.setText(String.valueOf(darkSky.getLowTemp() + " \u2103"));
         holder.mDailySummary.setText(darkSky.getSummary());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPositionInterface.getWeatherPosition(holder.getAdapterPosition());
+            }
+        });
     }
 
     @Override

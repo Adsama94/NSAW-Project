@@ -14,7 +14,7 @@ import okhttp3.Response;
 public class StockParser {
 
     private static final String LOG_TAG = StockParser.class.getSimpleName();
-    private static final String STOCK_URL = "";
+    private static final String STOCK_URL = "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=INR&apikey=A3G413PBID5IBS0W";
 
     public static JSONArray getStockData() {
         OkHttpClient client = new OkHttpClient();
