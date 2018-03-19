@@ -1,0 +1,150 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:id="@+id/widget_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="end"
+        android:layout_margin="8dp"
+        android:fontFamily="@font/droid_sans"
+        android:textColor="@color/textWhite"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="Delhi, India" />
+
+    <RelativeLayout
+        android:layout_width="180dp"
+        android:layout_height="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/widget_location">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/widget_date_one"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/droid_sans"
+                android:textColor="@color/textWhite"
+                android:textSize="14sp"
+                tools:text="MON" />
+
+            <TextView
+                android:id="@+id/widget_date_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/droid_sans"
+                android:textColor="@color/textWhite"
+                android:textSize="14sp"
+                tools:text="TUE" />
+
+            <TextView
+                android:id="@+id/widget_date_three"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/droid_sans"
+                android:textColor="@color/textWhite"
+                android:textSize="14sp"
+                tools:text="WED" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/temp_one"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/droid_sans"
+                android:textColor="@color/textWhite"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="30℃\u2191\n15℃\u2193" />
+
+            <TextView
+                android:id="@+id/temp_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/droid_sans"
+                android:textColor="@color/textWhite"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="35℃\u2191\n17℃\u2193" />
+
+            <TextView
+                android:id="@+id/temp_three"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/droid_sans"
+                android:textColor="@color/textWhite"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="27℃\u2191\n16℃\u2193" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_poweredBy"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_alignLeft="@+id/widget_location"
+        android:layout_alignStart="@+id/widget_location"
+        android:layout_below="@+id/widget_summary"
+        android:layout_marginTop="129dp"
+        android:scaleType="fitXY" />
+
+
+    <TextView
+        android:id="@+id/widget_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/widget_location"
+        android:layout_alignBottom="@+id/widget_location"
+        android:layout_alignLeft="@+id/widget_summary"
+        android:layout_alignStart="@+id/widget_summary"
+        android:fontFamily="@font/droid_sans"
+        android:textColor="@color/textWhite"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="Temperature" />
+
+    <TextView
+        android:id="@+id/widget_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/widget_temp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/droid_sans"
+        android:textColor="@color/textWhite"
+        android:textSize="14sp"
+        tools:text="Windy" />
+
+</RelativeLayout>

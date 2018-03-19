@@ -40,6 +40,7 @@ import com.anvil.adsama.nsaw.network.NewsSearchTask;
 import com.anvil.adsama.nsaw.network.StockListener;
 import com.anvil.adsama.nsaw.network.WeatherAsyncTask;
 import com.anvil.adsama.nsaw.network.WeatherListener;
+import com.anvil.adsama.nsaw.widget.WeatherWidget;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.api.Auth;
@@ -107,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         newsRequest.execute();
         WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask(this);
         weatherAsyncTask.execute();
+//        StockAsyncTask stockAsyncTask = new StockAsyncTask(this);
+//        stockAsyncTask.execute();
     }
 
     @Override
@@ -314,10 +317,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mWeatherFragment = new WeatherFragment();
             mWeatherFragment.setArguments(bundleForWeather);
             getSupportFragmentManager().beginTransaction().replace(R.id.weather_fragment_container, mWeatherFragment).commit();
+            sendWeatherBroadcast();
         }
     }
 
     private void setStockData() {
+        Bundle bundleForStock = new Bundle();
         mStockFragment = new StockFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.stock_fragment_container, mStockFragment).commit();
     }
@@ -332,5 +337,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public String makeSearchUrl() {
         return "https://newsapi.org/v2/everything?q=" + searchText + "&language=en&pageSize=30&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
+    }
+
+    private void sendWeatherBroadcast() {
+        Intent intent = new Intent(this, WeatherWidget.class);
+        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE\"");
+        WeatherWidget.setWeatherList(mDarkSkyData);
+        intent.putParcelableArrayListExtra("weatherList", mDarkSkyData);
+        sendBroadcast(intent);
     }
 }

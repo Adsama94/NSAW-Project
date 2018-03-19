@@ -46,7 +46,7 @@ public class DarkSkyCurrent implements Parcelable {
     @SerializedName("visibility")
     @Expose
     private float mVisibility;
-    @SerializedName("summary")
+    //    @SerializedName("summary")
     @Expose
     private String mWeeklySummary;
     @SerializedName("daily")
