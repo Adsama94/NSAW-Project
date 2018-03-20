@@ -28,6 +28,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.adapters.NewsAdapter;
 import com.anvil.adsama.nsaw.adapters.NewsPositionInterface;
+import com.anvil.adsama.nsaw.analytics.NsawApp;
 import com.anvil.adsama.nsaw.fragments.LocationFragment;
 import com.anvil.adsama.nsaw.fragments.StockFragment;
 import com.anvil.adsama.nsaw.fragments.WeatherFragment;
@@ -345,5 +346,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         WeatherWidget.setWeatherList(mDarkSkyData);
         intent.putParcelableArrayListExtra("weatherList", mDarkSkyData);
         sendBroadcast(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NsawApp.getInstance().trackScreenView("MAIN/NEWS SCREEN");
     }
 }

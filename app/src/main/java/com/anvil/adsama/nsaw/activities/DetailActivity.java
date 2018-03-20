@@ -6,6 +6,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.anvil.adsama.nsaw.R;
+import com.anvil.adsama.nsaw.analytics.NsawApp;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,5 +23,11 @@ public class DetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mWebView.setWebViewClient(new WebViewClient());
 //        mWebView.loadUrl();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NsawApp.getInstance().trackScreenView("DETAIL SCREEN");
     }
 }

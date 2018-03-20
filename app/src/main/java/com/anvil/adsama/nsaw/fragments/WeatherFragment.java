@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.adapters.WeatherAdapter;
 import com.anvil.adsama.nsaw.adapters.WeatherPositionInterface;
+import com.anvil.adsama.nsaw.analytics.NsawApp;
 import com.anvil.adsama.nsaw.model.DarkSkyCurrent;
 import com.anvil.adsama.nsaw.model.DarkSkyDaily;
 
@@ -103,5 +104,11 @@ public class WeatherFragment extends android.support.v4.app.Fragment implements 
     @Override
     public void getWeatherPosition(int position) {
         Toast.makeText(getContext(), "Position clicked is " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        NsawApp.getInstance().trackScreenView("WEATHER FRAGMENT");
     }
 }

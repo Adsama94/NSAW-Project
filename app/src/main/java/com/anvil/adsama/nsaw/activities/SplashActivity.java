@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.anvil.adsama.nsaw.R;
+import com.anvil.adsama.nsaw.analytics.NsawApp;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -79,5 +80,11 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(onBoardIntent);
             finish();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NsawApp.getInstance().trackScreenView("SPLASH SCREEN");
     }
 }

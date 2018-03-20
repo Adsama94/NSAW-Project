@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.adapters.OnBoardingAdapter;
+import com.anvil.adsama.nsaw.analytics.NsawApp;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,5 +54,11 @@ public class OnBoardingActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NsawApp.getInstance().trackScreenView("VIEWPAGER SCREEN");
     }
 }

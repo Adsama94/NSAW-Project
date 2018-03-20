@@ -8,8 +8,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.anvil.adsama.nsaw.R;
+import com.anvil.adsama.nsaw.analytics.NsawApp;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,5 +95,12 @@ public class SettingsActivity extends AppCompatActivity {
         Intent gitHubIntent = new Intent(Intent.ACTION_VIEW);
         gitHubIntent.setData(Uri.parse(gitHubUrl));
         startActivity(gitHubIntent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(this, "RESUME HIT", Toast.LENGTH_SHORT).show();
+        NsawApp.getInstance().trackScreenView("SETTINGS SCREEN");
     }
 }

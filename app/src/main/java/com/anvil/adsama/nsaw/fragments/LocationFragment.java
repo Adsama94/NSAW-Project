@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.anvil.adsama.nsaw.R;
+import com.anvil.adsama.nsaw.analytics.NsawApp;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.MapView;
 
@@ -42,6 +43,7 @@ public class LocationFragment extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        NsawApp.getInstance().trackScreenView("LOCATION FRAGMENT");
     }
 
     @Override

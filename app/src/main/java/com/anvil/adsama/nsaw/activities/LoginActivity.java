@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.anvil.adsama.nsaw.R;
+import com.anvil.adsama.nsaw.analytics.NsawApp;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -149,5 +150,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 finish();
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NsawApp.getInstance().trackScreenView("LOGIN SCREEN");
     }
 }
