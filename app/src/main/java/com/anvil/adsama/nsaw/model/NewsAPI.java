@@ -76,10 +76,10 @@ public class NewsAPI implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mAuthorName);
-        dest.writeString(mTitle);
-        dest.writeString(mDescription);
-        dest.writeString(mImageUrl);
-        dest.writeString(mDate);
+        dest.writeValue(mAuthorName);
+        dest.writeValue(mTitle);
+        dest.writeValue(mDescription);
+        dest.writeValue(mImageUrl);
+        dest.writeValue(mDate);
     }
 }

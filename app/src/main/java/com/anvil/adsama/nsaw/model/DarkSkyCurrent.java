@@ -100,12 +100,12 @@ public class DarkSkyCurrent implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mSummary);
-        dest.writeString(mWeeklySummary);
-        dest.writeFloat(mTemperature);
-        dest.writeString(mIcon);
-        dest.writeFloat(mWindSpeed);
-        dest.writeFloat(mVisibility);
+        dest.writeValue(mSummary);
+        dest.writeValue(mWeeklySummary);
+        dest.writeValue(mTemperature);
+        dest.writeValue(mIcon);
+        dest.writeValue(mWindSpeed);
+        dest.writeValue(mVisibility);
         dest.writeList(mDailyList);
     }
 }

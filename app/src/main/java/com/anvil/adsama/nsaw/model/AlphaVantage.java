@@ -98,12 +98,12 @@ public class AlphaVantage implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mCompanyName);
-        dest.writeString(mLastRefreshTime);
-        dest.writeFloat(mOpen);
-        dest.writeFloat(mHigh);
-        dest.writeFloat(mLow);
-        dest.writeFloat(mClose);
-        dest.writeFloat(mVolume);
+        dest.writeValue(mCompanyName);
+        dest.writeValue(mLastRefreshTime);
+        dest.writeValue(mOpen);
+        dest.writeValue(mHigh);
+        dest.writeValue(mLow);
+        dest.writeValue(mClose);
+        dest.writeValue(mVolume);
     }
 }
