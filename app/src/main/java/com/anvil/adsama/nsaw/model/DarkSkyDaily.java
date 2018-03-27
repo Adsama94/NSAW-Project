@@ -118,14 +118,14 @@ public class DarkSkyDaily implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(mTime);
-        dest.writeValue(mSummary);
-        dest.writeValue(mHighTemperature);
-        dest.writeValue(mLowTemperature);
-        dest.writeValue(mApparentHigh);
-        dest.writeValue(mApparentLow);
-        dest.writeValue(mDewPoint);
-        dest.writeValue(mHumidity);
-        dest.writeValue(mVisibility);
+        dest.writeLong(mTime);
+        dest.writeString(mSummary);
+        dest.writeFloat(mHighTemperature);
+        dest.writeFloat(mLowTemperature);
+        dest.writeFloat(mApparentHigh);
+        dest.writeFloat(mApparentLow);
+        dest.writeFloat(mDewPoint);
+        dest.writeFloat(mHumidity);
+        dest.writeFloat(mVisibility);
     }
 }

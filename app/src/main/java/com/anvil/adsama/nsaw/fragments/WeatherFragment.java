@@ -1,5 +1,6 @@
 package com.anvil.adsama.nsaw.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.anvil.adsama.nsaw.R;
+import com.anvil.adsama.nsaw.activities.DetailActivity;
 import com.anvil.adsama.nsaw.adapters.WeatherAdapter;
 import com.anvil.adsama.nsaw.adapters.WeatherPositionInterface;
 import com.anvil.adsama.nsaw.analytics.NsawApp;
@@ -84,26 +85,30 @@ public class WeatherFragment extends android.support.v4.app.Fragment implements 
 
     private void setWeatherIcon() {
         String weatherIconData = mWeatherData.getSummary();
-        if (weatherIconData.contains("rain")) {
+        if (weatherIconData.contains("Rain")) {
             mIcon.setImageResource(R.drawable.ic_rainy);
         } else if (weatherIconData.contains("Clear")) {
             mIcon.setImageResource(R.drawable.ic_sunny);
-        } else if (weatherIconData.contains("cloudy")) {
+        } else if (weatherIconData.contains("Cloudy")) {
             mIcon.setImageResource(R.drawable.ic_cloudy);
-        } else if (weatherIconData.contains("snow")) {
+        } else if (weatherIconData.contains("Snow")) {
             mIcon.setImageResource(R.drawable.ic_snowflake);
-        } else if (weatherIconData.contains("thunder")) {
+        } else if (weatherIconData.contains("Thunder")) {
             mIcon.setImageResource(R.drawable.ic_lightning);
-        } else if (weatherIconData.contains("partly sunny")) {
+        } else if (weatherIconData.contains("Partly Sunny")) {
             mIcon.setImageResource(R.drawable.ic_partly_sunny);
-        } else if (weatherIconData.contains("showers")) {
+        } else if (weatherIconData.contains("Showers")) {
             mIcon.setImageResource(R.drawable.ic_showers);
         }
     }
 
     @Override
     public void getWeatherPosition(int position) {
-        Toast.makeText(getContext(), "Position clicked is " + position, Toast.LENGTH_SHORT).show();
+        Intent detailIntent = new Intent(getContext(), DetailActivity.class);
+        if (mWeatherCurrentList != null)
+            detailIntent.putParcelableArrayListExtra("Weather List", mWeatherCurrentList);
+        detailIntent.putExtra("Weather Position", position);
+        startActivity(detailIntent);
     }
 
     @Override

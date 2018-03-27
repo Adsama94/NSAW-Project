@@ -49,7 +49,7 @@ public class WeatherWidget extends AppWidgetProvider {
     private static String setForecastTemps(ArrayList<DarkSkyDaily> dailyData, int position) {
         String highTemp = String.valueOf(dailyData.get(position).getHighTemp());
         String lowTemp = String.valueOf(dailyData.get(position).getLowTemp());
-        return highTemp + " \u2103" + "\u2191" + "\n" + lowTemp + " \u2103" + "\u2193";
+        return highTemp + " \u2191" + "\n" + lowTemp + " \u2193";
     }
 
     public static void setWeatherList(ArrayList<DarkSkyCurrent> weatherData) {

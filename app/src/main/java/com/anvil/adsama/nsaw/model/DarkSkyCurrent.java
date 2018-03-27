@@ -16,11 +16,11 @@ public class DarkSkyCurrent implements Parcelable {
         public DarkSkyCurrent createFromParcel(Parcel source) {
             DarkSkyCurrent darkSky = new DarkSkyCurrent();
             darkSky.mSummary = ((String) source.readValue((String.class.getClassLoader())));
+            darkSky.mWeeklySummary = ((String) source.readValue((String.class.getClassLoader())));
             darkSky.mTemperature = ((float) source.readValue((float.class.getClassLoader())));
             darkSky.mIcon = ((String) source.readValue((String.class.getClassLoader())));
             darkSky.mWindSpeed = ((float) source.readValue((float.class.getClassLoader())));
             darkSky.mVisibility = ((float) source.readValue((float.class.getClassLoader())));
-            darkSky.mWeeklySummary = ((String) source.readValue((String.class.getClassLoader())));
             source.readList(darkSky.mDailyList, (com.anvil.adsama.nsaw.model.DarkSkyDaily.class.getClassLoader()));
             return darkSky;
         }
@@ -46,12 +46,11 @@ public class DarkSkyCurrent implements Parcelable {
     @SerializedName("visibility")
     @Expose
     private float mVisibility;
-    //    @SerializedName("summary")
     @Expose
     private String mWeeklySummary;
     @SerializedName("daily")
     @Expose
-    private ArrayList<DarkSkyDaily> mDailyList;
+    private ArrayList<DarkSkyDaily> mDailyList = null;
 
     private DarkSkyCurrent() {
     }
@@ -101,12 +100,12 @@ public class DarkSkyCurrent implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(mSummary);
-        dest.writeValue(mTemperature);
-        dest.writeValue(mIcon);
-        dest.writeValue(mWindSpeed);
-        dest.writeValue(mVisibility);
-        dest.writeValue(mWeeklySummary);
-        dest.writeValue(mDailyList);
+        dest.writeString(mSummary);
+        dest.writeString(mWeeklySummary);
+        dest.writeFloat(mTemperature);
+        dest.writeString(mIcon);
+        dest.writeFloat(mWindSpeed);
+        dest.writeFloat(mVisibility);
+        dest.writeList(mDailyList);
     }
 }

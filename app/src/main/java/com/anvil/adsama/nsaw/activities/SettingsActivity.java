@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.analytics.NsawApp;
@@ -100,7 +99,6 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(this, "RESUME HIT", Toast.LENGTH_SHORT).show();
         NsawApp.getInstance().trackScreenView("SETTINGS SCREEN");
     }
 }

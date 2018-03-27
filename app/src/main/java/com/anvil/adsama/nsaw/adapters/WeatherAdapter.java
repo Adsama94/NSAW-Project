@@ -1,6 +1,7 @@
 package com.anvil.adsama.nsaw.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,14 +26,15 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
         mPositionInterface = positionInterface;
     }
 
+    @NonNull
     @Override
-    public WeatherHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public WeatherHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.weather_daily_item, parent, false);
         return new WeatherHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final WeatherHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final WeatherHolder holder, int position) {
         DarkSkyDaily darkSky = mWeatherList.get(position);
         Long epochTime = darkSky.getTime();
         Date date = new Date(epochTime * 1000);

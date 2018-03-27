@@ -11,20 +11,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class StockAsyncTask extends AsyncTask<Void, Void, ArrayList<AlphaVantage>> {
+public class StockSearchTask extends AsyncTask<String, Void, ArrayList<AlphaVantage>> {
 
-    private static final String LOG_TAG = StockAsyncTask.class.getSimpleName();
+    private static final String LOG_TAG = StockSearchTask.class.getSimpleName();
     private StockListener mStockListener;
     private ArrayList<AlphaVantage> stockList = new ArrayList<>();
 
-    public StockAsyncTask(StockListener stockListener) {
+    public StockSearchTask(StockListener stockListener) {
         mStockListener = stockListener;
     }
 
     @Override
-    protected ArrayList<AlphaVantage> doInBackground(Void... voids) {
+    protected ArrayList<AlphaVantage> doInBackground(String... strings) {
         StockParser stockParser = new StockParser();
-        JSONObject stockData = stockParser.getStockData();
+        JSONObject stockData = stockParser.getStockSearch(strings[0]);
         if (stockData != null) {
             try {
                 JSONObject stockMetaData = stockData.getJSONObject("Meta Data");

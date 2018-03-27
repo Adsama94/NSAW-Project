@@ -7,9 +7,9 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,7 +24,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.adapters.NewsAdapter;
 import com.anvil.adsama.nsaw.adapters.NewsPositionInterface;
@@ -38,7 +37,9 @@ import com.anvil.adsama.nsaw.model.NewsAPI;
 import com.anvil.adsama.nsaw.network.NewsAsyncTask;
 import com.anvil.adsama.nsaw.network.NewsListener;
 import com.anvil.adsama.nsaw.network.NewsSearchTask;
+import com.anvil.adsama.nsaw.network.StockAsyncTask;
 import com.anvil.adsama.nsaw.network.StockListener;
+import com.anvil.adsama.nsaw.network.StockSearchTask;
 import com.anvil.adsama.nsaw.network.WeatherAsyncTask;
 import com.anvil.adsama.nsaw.network.WeatherListener;
 import com.anvil.adsama.nsaw.widget.WeatherWidget;
@@ -74,22 +75,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout mDrawerLayout;
     @BindView(R.id.recycler_news)
     RecyclerView mNewsRecyclerView;
-    @BindView(R.id.news_layout_main)
-    ConstraintLayout mNewsLayout;
     CircleImageView mProfileImageView;
     TextView mProfileNameView;
     TextView mProfileEmailView;
     GoogleApiClient mGoogleApiClient;
     LinearLayoutManager linearLayoutManager;
-    ArrayList<NewsAPI> mNewsAPIData;
-    ArrayList<DarkSkyCurrent> mDarkSkyData;
-    NewsAdapter mNewsAdapter;
-    WeatherFragment mWeatherFragment;
-    LocationFragment mLocationFragment;
-    StockFragment mStockFragment;
-    android.support.v7.widget.SearchView mSearchView;
+    private ArrayList<NewsAPI> mNewsAPIData;
+    private ArrayList<DarkSkyCurrent> mDarkSkyData;
+    private ArrayList<AlphaVantage> mStockData;
+    private NewsAdapter mNewsAdapter;
+    private WeatherFragment mWeatherFragment;
+    private LocationFragment mLocationFragment;
+    private StockFragment mStockFragment;
     private String searchText;
-
+    private int mMenuId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         newsRequest.execute();
         WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask(this);
         weatherAsyncTask.execute();
-//        StockAsyncTask stockAsyncTask = new StockAsyncTask(this);
-//        stockAsyncTask.execute();
+        StockAsyncTask stockAsyncTask = new StockAsyncTask(this);
+        stockAsyncTask.execute();
     }
 
     @Override
@@ -136,17 +135,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        mSearchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
+        final android.support.v7.widget.SearchView mSearchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
         mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchText = query;
-                NewsSearchTask newsSearchTask = new NewsSearchTask(MainActivity.this);
-                newsSearchTask.execute(makeSearchUrl());
-                mNewsAdapter.notifyDataSetChanged();
-                LottieAnimationView lottieAnimationView = findViewById(R.id.spider_loader);
-                lottieAnimationView.setVisibility(View.VISIBLE);
-                lottieAnimationView.playAnimation();
+                if (mMenuId == R.id.nav_news) {
+                    NewsSearchTask newsSearchTask = new NewsSearchTask(MainActivity.this);
+                    newsSearchTask.execute(makeNewsSearchUrl());
+                    mNewsAdapter.notifyDataSetChanged();
+                } else if (mMenuId == R.id.nav_stock) {
+                    StockSearchTask stockSearchTask = new StockSearchTask(MainActivity.this);
+                    stockSearchTask.execute(makeStockSearchUrl());
+                    setStockData();
+                    mStockFragment.refreshAdapter();
+                } else if (mMenuId == R.id.nav_weather) {
+                    Toast.makeText(MainActivity.this, "HATT", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
 
@@ -168,9 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             case R.id.action_search:
                 if (mLocationFragment != null) {
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.hide(mLocationFragment);
-                    fragmentTransaction.commit();
+                    hideFragments(mLocationFragment);
                 }
                 return true;
         }
@@ -179,82 +182,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.nav_news) {
+        mMenuId = item.getItemId();
+        if (mMenuId == R.id.nav_news) {
             mToolbar.setTitle(R.string.news);
             if (mLocationFragment != null) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(mLocationFragment);
-                fragmentTransaction.commit();
+                hideFragments(mLocationFragment);
+            } else if (mWeatherFragment != null) {
+                hideFragments(mWeatherFragment);
+            } else if (mStockFragment != null) {
+                hideFragments(mStockFragment);
             }
-            if (mWeatherFragment != null) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(mWeatherFragment);
-                fragmentTransaction.commit();
-            }
-            if (mStockFragment != null) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(mStockFragment);
-                fragmentTransaction.commit();
-            }
-        } else if (id == R.id.nav_stock) {
+        } else if (mMenuId == R.id.nav_stock) {
             mToolbar.setTitle(R.string.stock);
             setStockData();
             if (mLocationFragment != null) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(mLocationFragment);
-                fragmentTransaction.commit();
+                hideFragments(mLocationFragment);
+            } else if (mWeatherFragment != null) {
+                hideFragments(mWeatherFragment);
             }
-            if (mWeatherFragment != null) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(mWeatherFragment);
-                fragmentTransaction.commit();
-            }
-        } else if (id == R.id.nav_weather) {
+        } else if (mMenuId == R.id.nav_weather) {
             mToolbar.setTitle(R.string.weather);
             setWeatherData();
             if (mLocationFragment != null) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(mLocationFragment);
-                fragmentTransaction.commit();
+                hideFragments(mLocationFragment);
+            } else if (mStockFragment != null) {
+                hideFragments(mStockFragment);
             }
-            if (mStockFragment != null) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(mStockFragment);
-                fragmentTransaction.commit();
-            }
-        } else if (id == R.id.nav_bookmark) {
+        } else if (mMenuId == R.id.nav_bookmark) {
             mToolbar.setTitle(R.string.bookmarks);
             if (mLocationFragment != null) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(mLocationFragment);
-                fragmentTransaction.commit();
+                hideFragments(mLocationFragment);
+            } else if (mStockFragment != null) {
+                hideFragments(mStockFragment);
+            } else if (mWeatherFragment != null) {
+                hideFragments(mWeatherFragment);
             }
-            if (mStockFragment != null) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(mStockFragment);
-                fragmentTransaction.commit();
-            }
-            if (mWeatherFragment != null) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.hide(mWeatherFragment);
-                fragmentTransaction.commit();
-            }
-        } else if (id == R.id.nav_settings) {
+        } else if (mMenuId == R.id.nav_settings) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
-        } else if (id == R.id.nav_rating) {
+        } else if (mMenuId == R.id.nav_rating) {
             Uri uri = Uri.parse("market://details?id=" + getApplicationContext().getPackageName());
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             // To count with Play market backstack, After pressing back button,
             // to taken back to our application, we need to add following flags to intent.
-            goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             try {
                 startActivity(goToMarket);
             } catch (ActivityNotFoundException e) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
             }
-        } else if (id == R.id.nav_logout) {
+        } else if (mMenuId == R.id.nav_logout) {
             Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(@NonNull Status status) {
@@ -266,6 +243,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NsawApp.getInstance().trackScreenView("MAIN/NEWS SCREEN");
     }
 
     @Override
@@ -283,12 +266,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void returnStockList(ArrayList<AlphaVantage> alphaVantageList) {
-
+        mStockData = new ArrayList<>();
+        mStockData = alphaVantageList;
     }
 
     @Override
     public void getNewsPosition(int position) {
-        Toast.makeText(this, "passed position is " + position, Toast.LENGTH_SHORT).show();
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+        detailIntent.putExtra("News Position", position);
+        detailIntent.putParcelableArrayListExtra("News List", mNewsAPIData);
+        startActivity(detailIntent);
     }
 
     private void setNavDrawer() {
@@ -324,8 +311,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setStockData() {
         Bundle bundleForStock = new Bundle();
-        mStockFragment = new StockFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.stock_fragment_container, mStockFragment).commit();
+        bundleForStock.putParcelableArrayList("AlphaVantage", mStockData);
+        if (mStockData != null) {
+            mStockFragment = new StockFragment();
+            mStockFragment.setArguments(bundleForStock);
+            getSupportFragmentManager().beginTransaction().replace(R.id.stock_fragment_container, mStockFragment).commit();
+        }
+    }
+
+    private void hideFragments(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.hide(fragment);
+        fragmentTransaction.commit();
     }
 
     private void checkLocationPermission() {
@@ -336,8 +333,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public String makeSearchUrl() {
+    public String makeNewsSearchUrl() {
         return "https://newsapi.org/v2/everything?q=" + searchText + "&language=en&pageSize=30&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
+    }
+
+    public String makeStockSearchUrl() {
+        return "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + searchText + "&outputsize=compact&apikey=A3G413PBID5IBS0W";
+    }
+
+    public String makeWeatherSearchUrl(double latitude, double longitude) {
+        return "https://api.darksky.net/forecast/6baefba9f2a860bd68ecb53fd8024caa/" + latitude + "," + longitude + "?units=si";
     }
 
     private void sendWeatherBroadcast() {
@@ -346,11 +351,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         WeatherWidget.setWeatherList(mDarkSkyData);
         intent.putParcelableArrayListExtra("weatherList", mDarkSkyData);
         sendBroadcast(intent);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        NsawApp.getInstance().trackScreenView("MAIN/NEWS SCREEN");
     }
 }

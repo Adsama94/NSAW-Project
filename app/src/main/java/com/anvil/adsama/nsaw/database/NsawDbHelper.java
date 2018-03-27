@@ -26,4 +26,4 @@ public class NsawDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + NsawContract.NsawEntry.TABLE_NAME);
         onCreate(db);
     }
-} 
+}
