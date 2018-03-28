@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_bottom_news"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_news"
+        android:title="@string/news"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_bottom_stock"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_stock"
+        android:title="@string/stock"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_bottom_weather"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_cloud"
+        android:title="@string/weather"
+        app:showAsAction="ifRoom" />
+
+</menu>

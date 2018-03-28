@@ -7,16 +7,14 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.anvil.adsama.nsaw.R;
-import com.anvil.adsama.nsaw.analytics.NsawApp;
+import com.anvil.adsama.nsaw.fragments.DetailFragment;
 import com.anvil.adsama.nsaw.model.AlphaVantage;
 import com.anvil.adsama.nsaw.model.DarkSkyCurrent;
-import com.anvil.adsama.nsaw.model.DarkSkyDaily;
 import com.anvil.adsama.nsaw.model.NewsAPI;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -28,7 +26,6 @@ public class DetailActivity extends AppCompatActivity {
     ArrayList<NewsAPI> newsData = new ArrayList<>();
     ArrayList<AlphaVantage> stockData = new ArrayList<>();
     ArrayList<DarkSkyCurrent> weatherCurrentData = new ArrayList<>();
-    ArrayList<DarkSkyDaily> weatherDailyData = new ArrayList<>();
     int newsPosition;
     int stockPosition;
     int weatherPosition;
@@ -51,7 +48,9 @@ public class DetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("");
         }
-        getDataFromIntent();
+        if (savedInstanceState == null) {
+            getDataFromIntent();
+        }
     }
 
     private void getDataFromIntent() {
@@ -61,37 +60,27 @@ public class DetailActivity extends AppCompatActivity {
             stockPosition = data.getIntExtra("Stock Position", 0);
             weatherPosition = data.getIntExtra("Weather Position", 0);
             newsData = data.getParcelableArrayListExtra("News List");
-            if (newsData != null) {
-                loadNewsData();
-            }
             stockData = data.getParcelableArrayListExtra("Stock List");
-            if (stockData != null) {
-                loadStockData();
-            }
             weatherCurrentData = data.getParcelableArrayListExtra("Weather List");
-            if (weatherCurrentData != null) {
-                weatherDailyData = weatherCurrentData.get(weatherPosition).getDailyList();
-                loadWeatherData();
-            }
+            Bundle arguments = new Bundle();
+            arguments.putInt("News Position", newsPosition);
+            arguments.putInt("Stock Position", stockPosition);
+            arguments.putInt("Weather Position", weatherPosition);
+            arguments.putParcelableArrayList("News List", newsData);
+            arguments.putParcelableArrayList("Stock List", stockData);
+            arguments.putParcelableArrayList("Weather List", weatherCurrentData);
+            DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction().add(R.id.detail_container, fragment).commit();
         }
     }
 
-    private void loadNewsData() {
-        Picasso.with(getApplicationContext()).load(newsData.get(newsPosition).getImageUrl()).into(mBackdropView);
-    }
-
-    private void loadStockData() {
-        Toast.makeText(this, "STOCK", Toast.LENGTH_SHORT).show();
-    }
-
-    private void loadWeatherData() {
-        Toast.makeText(this, "WEATHER", Toast.LENGTH_SHORT).show();
-    }
-
     @Override
-    protected void onResume() {
-        super.onResume();
-        Toast.makeText(this, "lel " + newsPosition + " " + stockPosition + " " + weatherPosition, Toast.LENGTH_SHORT).show();
-        NsawApp.getInstance().trackScreenView("DETAIL SCREEN");
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
