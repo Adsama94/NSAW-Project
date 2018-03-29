@@ -15,6 +15,10 @@ public class DarkSkyCurrent implements Parcelable {
         @Override
         public DarkSkyCurrent createFromParcel(Parcel source) {
             DarkSkyCurrent darkSky = new DarkSkyCurrent();
+            double d = 0.0;
+            float f = (float) d;
+            DarkSkyDaily darkSkyDaily = new DarkSkyDaily(0, "", f, f, f, f, f, f, f);
+            darkSky.mDailyList.add(darkSkyDaily);
             darkSky.mSummary = ((String) source.readValue((String.class.getClassLoader())));
             darkSky.mWeeklySummary = ((String) source.readValue((String.class.getClassLoader())));
             darkSky.mTemperature = ((float) source.readValue((float.class.getClassLoader())));
@@ -50,7 +54,7 @@ public class DarkSkyCurrent implements Parcelable {
     private String mWeeklySummary;
     @SerializedName("daily")
     @Expose
-    private ArrayList<DarkSkyDaily> mDailyList = null;
+    private ArrayList<DarkSkyDaily> mDailyList = new ArrayList<>();
 
     private DarkSkyCurrent() {
     }

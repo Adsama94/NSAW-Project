@@ -71,7 +71,8 @@ public class DetailFragment extends Fragment {
             mAppBarLayout = activity.findViewById(R.id.toolbar_layout);
             mCollapsingImageView = activity.findViewById(R.id.iv_backdrop);
             if (mCollapsingImageView != null) {
-                Picasso.with(getContext()).load(newsData.get(newsPosition).getImageUrl()).into(mCollapsingImageView);
+                if (newsData != null)
+                    Picasso.with(getContext()).load(newsData.get(newsPosition).getImageUrl()).into(mCollapsingImageView);
             }
         }
     }
