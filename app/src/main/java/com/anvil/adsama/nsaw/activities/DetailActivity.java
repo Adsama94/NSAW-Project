@@ -8,7 +8,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.fragments.DetailFragment;
@@ -29,8 +28,6 @@ public class DetailActivity extends AppCompatActivity {
     int newsPosition;
     int stockPosition;
     int weatherPosition;
-    @BindView(R.id.iv_backdrop)
-    ImageView mBackdropView;
     @BindView(R.id.detail_toolbar)
     Toolbar mToolbar;
 
