@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">NSAW</string>
-    <string name="onboard_news">Stay updated with the latest news from 5000+ sources.</string>
+    <string name="onboard_news">Stay updated with the latest news from 30000+ sources.</string>
     <string name="onboard_stock">Keep track of the latest stock market trends.</string>
     <string name="onboard_weather">Get Real-Time location based weather forecasts.</string>
     <string name="onboarding_button">let\'s begin</string>
@@ -42,4 +42,5 @@
     <string name="close">CLOSE</string>
     <string name="open">OPEN</string>
     <string name="collapsing_image">Collapsing Image</string>
+    <string name="read_full_article">READ FULL ARTICLE</string>
 </resources>

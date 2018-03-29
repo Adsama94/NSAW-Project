@@ -2,9 +2,12 @@ package com.anvil.adsama.nsaw.fragments;
 
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +39,8 @@ public class DetailFragment extends Fragment {
     TextView mDetailText, mDateText;
     CollapsingToolbarLayout mAppBarLayout;
     ImageView mCollapsingImageView;
+    ConstraintLayout mNewsLayout, mStockLayout, mWeatherLayout;
+    Button mNewsArticleButton;
     ArrayList<NewsAPI> newsData = new ArrayList<>();
     ArrayList<AlphaVantage> stockData = new ArrayList<>();
     ArrayList<DarkSkyCurrent> weatherCurrentData = new ArrayList<>();
@@ -73,6 +79,10 @@ public class DetailFragment extends Fragment {
             if (mCollapsingImageView != null) {
                 if (newsData != null)
                     Picasso.with(getContext()).load(newsData.get(newsPosition).getImageUrl()).into(mCollapsingImageView);
+                if (stockData != null)
+                    mCollapsingImageView.setImageDrawable(getResources().getDrawable(R.drawable.stock_nav));
+                if (weatherCurrentData != null)
+                    mCollapsingImageView.setImageDrawable(getResources().getDrawable(R.drawable.weather_nav));
             }
         }
     }
@@ -80,10 +90,29 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        mNewsLayout = rootView.findViewById(R.id.news_layout_detail);
+        mStockLayout = rootView.findViewById(R.id.stock_layout_detail);
+        mWeatherLayout = rootView.findViewById(R.id.weather_layout_detail);
         mDetailText = rootView.findViewById(R.id.tv_detail_text);
         mDateText = rootView.findViewById(R.id.tv_detail_date);
+        mNewsArticleButton = rootView.findViewById(R.id.button_article);
         if (newsData != null) {
             displayNewsData();
+            mNewsLayout.setVisibility(View.VISIBLE);
+            mStockLayout.setVisibility(View.GONE);
+            mWeatherLayout.setVisibility(View.GONE);
+        }
+        if (stockData != null) {
+            displayStockData();
+            mNewsLayout.setVisibility(View.GONE);
+            mStockLayout.setVisibility(View.VISIBLE);
+            mWeatherLayout.setVisibility(View.GONE);
+        }
+        if (weatherCurrentData != null) {
+            displayWeatherData();
+            mNewsLayout.setVisibility(View.GONE);
+            mStockLayout.setVisibility(View.GONE);
+            mWeatherLayout.setVisibility(View.VISIBLE);
         }
         return rootView;
     }
@@ -103,7 +132,7 @@ public class DetailFragment extends Fragment {
             sharingButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(), "SHARE KARAAA", Toast.LENGTH_SHORT).show();
+                    makeSharingIntent();
                 }
             });
             BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav_view);
@@ -128,7 +157,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void displayNewsData() {
-        NewsAPI newsAPI = newsData.get(newsPosition);
+        final NewsAPI newsAPI = newsData.get(newsPosition);
         if (newsAPI != null) {
             Activity activity = getActivity();
             if (mAppBarLayout != null && activity != null && activity instanceof DetailActivity) {
@@ -136,6 +165,14 @@ public class DetailFragment extends Fragment {
             }
             mDateText.setText(newsAPI.getDate());
             mDetailText.setText(newsAPI.getDescription());
+            mNewsArticleButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(newsAPI.getArticleUrl()));
+                    startActivity(i);
+                }
+            });
         }
         Toast.makeText(getContext(), "FRAGMENT ADDED " + String.valueOf(newsAPI), Toast.LENGTH_SHORT).show();
     }
@@ -147,6 +184,27 @@ public class DetailFragment extends Fragment {
     private void displayWeatherData() {
         DarkSkyCurrent skyCurrent = weatherCurrentData.get(weatherPosition);
         DarkSkyDaily skyDaily = weatherDailyData.get(weatherPosition);
+    }
+
+    private void makeSharingIntent() {
+        if (newsData != null) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT, newsData.get(newsPosition).getTitle());
+            sendIntent.putExtra(Intent.EXTRA_TEXT, newsData.get(newsPosition).getDescription() + "\n\n" + newsData.get(newsPosition).getArticleUrl());
+            startActivity(sendIntent);
+        } else if (stockData != null) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+        } else if (weatherCurrentData != null) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+        }
     }
 
     @Override

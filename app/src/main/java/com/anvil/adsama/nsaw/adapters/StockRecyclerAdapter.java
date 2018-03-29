@@ -35,12 +35,8 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull final StockHolder holder, int position) {
         AlphaVantage alphaVantage = mStockList.get(position);
-        holder.companyName.setText(alphaVantage.getCompanyName());
-        holder.open.setText(String.valueOf(alphaVantage.getOpen()));
-        holder.close.setText(String.valueOf(alphaVantage.getClose()));
         holder.high.setText(String.valueOf(alphaVantage.getHigh()));
         holder.low.setText(String.valueOf(alphaVantage.getLow()));
-        holder.refresh.setText(String.valueOf(alphaVantage.getRefreshTime()));
         holder.volume.setText(String.valueOf(alphaVantage.getVolume()));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,22 +57,14 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockRecyclerAdap
 
     class StockHolder extends RecyclerView.ViewHolder {
 
-        TextView companyName;
-        TextView open;
-        TextView close;
         TextView high;
         TextView low;
-        TextView refresh;
         TextView volume;
 
         StockHolder(View itemView) {
             super(itemView);
-            companyName = itemView.findViewById(R.id.tv_company_name);
-            open = itemView.findViewById(R.id.tv_open);
-            close = itemView.findViewById(R.id.tv_close);
             high = itemView.findViewById(R.id.tv_high);
             low = itemView.findViewById(R.id.tv_low);
-            refresh = itemView.findViewById(R.id.tv_refresh);
             volume = itemView.findViewById(R.id.tv_volume);
         }
     }

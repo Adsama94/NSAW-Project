@@ -34,9 +34,10 @@ public class NewsSearchTask extends AsyncTask<String, Void, ArrayList<NewsAPI>> 
                     String authorName = currentNewsItem.optString("author");
                     String title = currentNewsItem.optString("title");
                     String description = currentNewsItem.optString("description");
+                    String articleUrl = currentNewsItem.optString("url");
                     String imageUrl = currentNewsItem.optString("urlToImage");
                     String date = currentNewsItem.optString("publishedAt");
-                    NewsAPI newsAPI = new NewsAPI(authorName, title, description, imageUrl, date);
+                    NewsAPI newsAPI = new NewsAPI(authorName, title, description, articleUrl, imageUrl, date);
                     newsApiList.add(newsAPI);
                     newsApiList = newsList;
                     Log.d(LOG_TAG, "DATA IS " + newsApiList);

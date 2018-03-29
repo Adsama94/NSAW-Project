@@ -16,6 +16,7 @@ public class NewsAPI implements Parcelable {
             newsAPI.mAuthorName = ((String) parcel.readValue((String.class.getClassLoader())));
             newsAPI.mTitle = ((String) parcel.readValue((String.class.getClassLoader())));
             newsAPI.mDescription = ((String) parcel.readValue((String.class.getClassLoader())));
+            newsAPI.mArticleUrl = ((String) parcel.readValue((String.class.getClassLoader())));
             newsAPI.mImageUrl = ((String) parcel.readValue((String.class.getClassLoader())));
             newsAPI.mDate = ((String) parcel.readValue((String.class.getClassLoader())));
             return newsAPI;
@@ -35,6 +36,9 @@ public class NewsAPI implements Parcelable {
     @SerializedName("description")
     @Expose
     private String mDescription;
+    @SerializedName("url")
+    @Expose
+    private String mArticleUrl;
     @SerializedName("urlToImage")
     @Expose
     private String mImageUrl;
@@ -45,10 +49,11 @@ public class NewsAPI implements Parcelable {
     private NewsAPI() {
     }
 
-    public NewsAPI(String authorName, String title, String description, String imageUrl, String date) {
+    public NewsAPI(String authorName, String title, String description, String articleUrl, String imageUrl, String date) {
         mAuthorName = authorName;
         mTitle = title;
         mDescription = description;
+        mArticleUrl = articleUrl;
         mImageUrl = imageUrl;
         mDate = date;
     }
@@ -59,6 +64,10 @@ public class NewsAPI implements Parcelable {
 
     public String getDescription() {
         return mDescription;
+    }
+
+    public String getArticleUrl() {
+        return mArticleUrl;
     }
 
     public String getImageUrl() {
@@ -79,6 +88,7 @@ public class NewsAPI implements Parcelable {
         dest.writeValue(mAuthorName);
         dest.writeValue(mTitle);
         dest.writeValue(mDescription);
+        dest.writeValue(mArticleUrl);
         dest.writeValue(mImageUrl);
         dest.writeValue(mDate);
     }
