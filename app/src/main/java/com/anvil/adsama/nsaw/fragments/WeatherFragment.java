@@ -107,6 +107,7 @@ public class WeatherFragment extends android.support.v4.app.Fragment implements 
         Intent detailIntent = new Intent(getContext(), DetailActivity.class);
         if (mWeatherCurrentList != null)
             detailIntent.putParcelableArrayListExtra("Weather List", mWeatherCurrentList);
+        detailIntent.putExtra("UID WEATHER", "FROM WEATHER");
         detailIntent.putExtra("Weather Position", position);
         startActivity(detailIntent);
     }

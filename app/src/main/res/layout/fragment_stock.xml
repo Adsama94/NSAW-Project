@@ -13,7 +13,7 @@
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="180dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="4dp"
             android:layout_marginLeft="4dp"
@@ -85,109 +85,28 @@
                     android:id="@+id/text_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:fontFamily="@font/patua_one"
                     android:text="@string/close"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_volume" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/text_open"
+                    app:layout_constraintTop_toTopOf="@+id/text_open" />
 
                 <TextView
                     android:id="@+id/actual_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="288dp"
+                    android:layout_marginStart="288dp"
                     android:fontFamily="@font/patua_one"
                     android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_close"
+                    app:layout_constraintEnd_toEndOf="@+id/text_close"
+                    app:layout_constraintStart_toEndOf="@+id/actual_open"
+                    app:layout_constraintTop_toTopOf="@+id/actual_open"
                     tools:text="CLOSE" />
-
-                <TextView
-                    android:id="@+id/text_high"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:fontFamily="@font/patua_one"
-                    android:text="@string/highFragment"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.999"
-                    app:layout_constraintStart_toEndOf="@+id/text_open"
-                    app:layout_constraintTop_toTopOf="@+id/text_open" />
-
-                <TextView
-                    android:id="@+id/actual_high"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/patua_one"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.999"
-                    app:layout_constraintStart_toEndOf="@+id/text_high"
-                    app:layout_constraintTop_toBottomOf="@+id/text_high"
-                    tools:text="HIGH" />
-
-                <TextView
-                    android:id="@+id/text_low"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:fontFamily="@font/patua_one"
-                    android:text="@string/lowFragment"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/text_close" />
-
-                <TextView
-                    android:id="@+id/actual_low"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/patua_one"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_low"
-                    tools:text="LOW" />
-
-                <TextView
-                    android:id="@+id/text_volume"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="120dp"
-                    android:fontFamily="@font/patua_one"
-                    android:text="@string/volume"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_company" />
-
-                <TextView
-                    android:id="@+id/actual_volume"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/patua_one"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_volume"
-                    tools:text="VOLUME" />
 
             </android.support.constraint.ConstraintLayout>
 

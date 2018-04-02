@@ -59,6 +59,9 @@ public class DetailActivity extends AppCompatActivity {
             newsData = data.getParcelableArrayListExtra("News List");
             stockData = data.getParcelableArrayListExtra("Stock List");
             weatherCurrentData = data.getParcelableArrayListExtra("Weather List");
+            String uidFromNews = data.getStringExtra("UID NEWS");
+            String uidFromStock = data.getStringExtra("UID STOCK");
+            String uidFromWeather = data.getStringExtra("UID WEATHER");
             Bundle arguments = new Bundle();
             arguments.putInt("News Position", newsPosition);
             arguments.putInt("Stock Position", stockPosition);
@@ -66,6 +69,9 @@ public class DetailActivity extends AppCompatActivity {
             arguments.putParcelableArrayList("News List", newsData);
             arguments.putParcelableArrayList("Stock List", stockData);
             arguments.putParcelableArrayList("Weather List", weatherCurrentData);
+            arguments.putString("NEWS", uidFromNews);
+            arguments.putString("STOCK", uidFromStock);
+            arguments.putString("WEATHER", uidFromWeather);
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction().add(R.id.detail_container, fragment).commit();

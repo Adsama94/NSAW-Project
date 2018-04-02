@@ -31,16 +31,10 @@ public class StockFragment extends Fragment implements StockPositionInterface {
     RecyclerView mStockRecyclerView;
     @BindView(R.id.text_company)
     TextView mCompanyText;
-    @BindView(R.id.actual_high)
-    TextView mHighText;
-    @BindView(R.id.actual_low)
-    TextView mLowText;
     @BindView(R.id.actual_open)
     TextView mOpenText;
     @BindView(R.id.actual_close)
     TextView mCloseText;
-    @BindView(R.id.actual_volume)
-    TextView mVolumeText;
     @BindView(R.id.text_refresh)
     TextView mRefreshText;
     StockRecyclerAdapter mStockAdapter;
@@ -64,13 +58,12 @@ public class StockFragment extends Fragment implements StockPositionInterface {
         View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
         ButterKnife.bind(this, rootView);
         initialiseStockData();
-        mCompanyText.setText(mStockData.get(0).getCompanyName());
-        mHighText.setText(String.valueOf(mStockData.get(0).getHigh()));
-        mLowText.setText(String.valueOf(mStockData.get(0).getLow()));
-        mOpenText.setText(String.valueOf(mStockData.get(0).getOpen()));
-        mCloseText.setText(String.valueOf(mStockData.get(0).getClose()));
-        mVolumeText.setText(String.valueOf(mStockData.get(0).getVolume()));
-        mRefreshText.setText(String.valueOf(mStockData.get(0).getRefreshTime()));
+        if (mStockData != null) {
+            mCompanyText.setText(mStockData.get(0).getCompanyName());
+            mOpenText.setText(String.valueOf(mStockData.get(0).getOpen()));
+            mCloseText.setText(String.valueOf(mStockData.get(0).getClose()));
+            mRefreshText.setText(String.valueOf(mStockData.get(0).getRefreshTime()));
+        }
         return rootView;
     }
 
@@ -96,6 +89,7 @@ public class StockFragment extends Fragment implements StockPositionInterface {
     public void getStockPosition(int position) {
         Intent detailIntent = new Intent(getContext(), DetailActivity.class);
         detailIntent.putExtra("Stock Position", position);
+        detailIntent.putExtra("UID STOCK", "FROM STOCK");
         detailIntent.putParcelableArrayListExtra("Stock List", mStockData);
         startActivity(detailIntent);
     }

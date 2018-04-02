@@ -1,6 +1,7 @@
 package com.anvil.adsama.nsaw.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,14 +27,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         mPositionInterface = positionInterface;
     }
 
+    @NonNull
     @Override
-    public NewsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NewsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.news_list_item, parent, false);
         return new NewsHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final NewsHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final NewsHolder holder, int position) {
         NewsAPI newsAPI = mNewsList.get(position);
         holder.mNewsTitle.setText(newsAPI.getTitle());
         if (newsAPI.getImageUrl().isEmpty()) {

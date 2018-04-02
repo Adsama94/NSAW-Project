@@ -169,10 +169,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.action_location:
                 mLocationFragment = new LocationFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.location_fragment_container, mLocationFragment).commit();
+                getSupportFragmentManager().popBackStack();
+                getSupportFragmentManager().beginTransaction().replace(R.id.location_fragment_container, mLocationFragment).addToBackStack(null).commit();
                 return true;
             case R.id.action_search:
                 if (mLocationFragment != null) {
+                    getSupportFragmentManager().popBackStack();
                     hideFragments(mLocationFragment);
                 }
                 return true;
@@ -185,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMenuId = item.getItemId();
         if (mMenuId == R.id.nav_news) {
             mToolbar.setTitle(R.string.news);
+            getSupportFragmentManager().popBackStack();
             if (mLocationFragment != null) {
                 hideFragments(mLocationFragment);
             } else if (mWeatherFragment != null) {
@@ -194,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } else if (mMenuId == R.id.nav_stock) {
             mToolbar.setTitle(R.string.stock);
+            getSupportFragmentManager().popBackStack();
             setStockData();
             if (mLocationFragment != null) {
                 hideFragments(mLocationFragment);
@@ -202,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } else if (mMenuId == R.id.nav_weather) {
             mToolbar.setTitle(R.string.weather);
+            getSupportFragmentManager().popBackStack();
             setWeatherData();
             if (mLocationFragment != null) {
                 hideFragments(mLocationFragment);
@@ -210,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } else if (mMenuId == R.id.nav_bookmark) {
             mToolbar.setTitle(R.string.bookmarks);
+            getSupportFragmentManager().popBackStack();
             if (mLocationFragment != null) {
                 hideFragments(mLocationFragment);
             } else if (mStockFragment != null) {
@@ -274,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void getNewsPosition(int position) {
         Intent detailIntent = new Intent(this, DetailActivity.class);
         detailIntent.putExtra("News Position", position);
+        detailIntent.putExtra("UID NEWS", "FROM NEWS");
         detailIntent.putParcelableArrayListExtra("News List", mNewsAPIData);
         startActivity(detailIntent);
     }
@@ -304,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (mDarkSkyData != null) {
             mWeatherFragment = new WeatherFragment();
             mWeatherFragment.setArguments(bundleForWeather);
-            getSupportFragmentManager().beginTransaction().replace(R.id.weather_fragment_container, mWeatherFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.weather_fragment_container, mWeatherFragment).addToBackStack(null).commit();
             sendWeatherBroadcast();
         }
     }
@@ -315,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (mStockData != null) {
             mStockFragment = new StockFragment();
             mStockFragment.setArguments(bundleForStock);
-            getSupportFragmentManager().beginTransaction().replace(R.id.stock_fragment_container, mStockFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.stock_fragment_container, mStockFragment).addToBackStack(null).commit();
         }
     }
 

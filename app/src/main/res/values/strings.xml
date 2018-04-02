@@ -43,4 +43,6 @@
     <string name="open">OPEN</string>
     <string name="collapsing_image">Collapsing Image</string>
     <string name="read_full_article">READ FULL ARTICLE</string>
+    <string name="dew_point">DEW POINT</string>
+    <string name="humidity">HUMIDITY</string>
 </resources>
