@@ -204,16 +204,27 @@ public class DetailFragment extends Fragment {
 
     private void displayWeatherData() {
         DarkSkyCurrent skyCurrent = weatherCurrentData.get(weatherPosition);
+        DarkSkyDaily skyDaily = weatherDailyData.get(weatherPosition);
         if (skyCurrent != null) {
-            DarkSkyDaily skyDaily = weatherDailyData.get(weatherPosition);
-            mTemp.setText(String.valueOf(skyDaily.getHighTemp()));
-            mApparentLow.setText(String.valueOf(skyDaily.getApparentLow()));
-            mApparentHigh.setText(String.valueOf(skyDaily.getApparentHigh()));
-            mVisibilityText.setText(String.valueOf(skyDaily.getVisibility()));
-            mHumidityText.setText(String.valueOf(skyDaily.getHumidity()));
-            mDewText.setText(String.valueOf(skyDaily.getDewPoint()));
-            mSummary.setText(skyDaily.getSummary());
-            setWeatherIcon();
+            if (weatherPosition == 0) {
+                mTemp.setText(String.valueOf(skyCurrent.getTemperature()));
+                mApparentLow.setText(String.valueOf(skyDaily.getApparentLow()));
+                mApparentHigh.setText(String.valueOf(skyDaily.getApparentHigh()));
+                mVisibilityText.setText(String.valueOf(skyCurrent.getVisibility()));
+                mHumidityText.setText(String.valueOf(skyDaily.getHumidity()));
+                mDewText.setText(String.valueOf(skyDaily.getDewPoint()));
+                mSummary.setText(skyCurrent.getSummary());
+                setWeatherIcon();
+            } else {
+                mTemp.setText(String.valueOf(skyDaily.getHighTemp()));
+                mApparentLow.setText(String.valueOf(skyDaily.getApparentLow()));
+                mApparentHigh.setText(String.valueOf(skyDaily.getApparentHigh()));
+                mVisibilityText.setText(String.valueOf(skyDaily.getVisibility()));
+                mHumidityText.setText(String.valueOf(skyDaily.getHumidity()));
+                mDewText.setText(String.valueOf(skyDaily.getDewPoint()));
+                mSummary.setText(skyDaily.getSummary());
+                setWeatherIcon();
+            }
         }
     }
 
@@ -309,21 +320,17 @@ public class DetailFragment extends Fragment {
 
     private void removeFromDatabase() {
         if (newsData != null) {
-            NewsAPI newsAPI = newsData.get(newsPosition);
             if (getContext() != null)
-                getContext().getContentResolver().delete(NsawContract.NsawEntry.NEWS_CONTENT_URI, NsawContract.NsawEntry.COLUMN_NEWS_TITLE + " = " + newsAPI.getTitle(), null);
+                getContext().getContentResolver().delete(NsawContract.NsawEntry.NEWS_CONTENT_URI, null, null);
         } else if (stockData != null) {
-            AlphaVantage alphaVantage = stockData.get(stockPosition);
             if (getContext() != null)
-                getContext().getContentResolver().delete(NsawContract.NsawEntry.STOCK_CONTENT_URI, NsawContract.NsawEntry.COLUMN_STOCK_ID + " = " + alphaVantage.getCompanyName(), null);
+                getContext().getContentResolver().delete(NsawContract.NsawEntry.STOCK_CONTENT_URI, null, null);
         } else if (weatherCurrentData != null) {
-            DarkSkyCurrent darkSkyCurrent = weatherCurrentData.get(weatherPosition);
             if (getContext() != null)
-                getContext().getContentResolver().delete(NsawContract.NsawEntry.WEATHER_CURRENT_CONTENT_URI, NsawContract.NsawEntry.COLUMN_CURRENT_ID + " = " + darkSkyCurrent.getSummary(), null);
+                getContext().getContentResolver().delete(NsawContract.NsawEntry.WEATHER_CURRENT_CONTENT_URI, null, null);
         } else if (weatherDailyData != null) {
-            DarkSkyDaily darkSkyDaily = weatherDailyData.get(weatherPosition);
             if (getContext() != null)
-                getContext().getContentResolver().delete(NsawContract.NsawEntry.WEATHER_DAILY_CONTENT_URI, NsawContract.NsawEntry.COLUMN_DAILY_ID + " = " + darkSkyDaily.getSummary(), null);
+                getContext().getContentResolver().delete(NsawContract.NsawEntry.WEATHER_DAILY_CONTENT_URI, null, null);
         }
     }
 
@@ -332,5 +339,4 @@ public class DetailFragment extends Fragment {
         super.onResume();
         NsawApp.getInstance().trackScreenView("DETAIL FRAGMENT");
     }
-
 }

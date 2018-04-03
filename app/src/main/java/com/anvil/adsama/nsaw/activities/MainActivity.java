@@ -28,6 +28,7 @@ import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.adapters.NewsAdapter;
 import com.anvil.adsama.nsaw.adapters.NewsPositionInterface;
 import com.anvil.adsama.nsaw.analytics.NsawApp;
+import com.anvil.adsama.nsaw.fragments.BookmarksFragment;
 import com.anvil.adsama.nsaw.fragments.LocationFragment;
 import com.anvil.adsama.nsaw.fragments.StockFragment;
 import com.anvil.adsama.nsaw.fragments.WeatherFragment;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NewsAdapter mNewsAdapter;
     private WeatherFragment mWeatherFragment;
     private LocationFragment mLocationFragment;
+    private BookmarksFragment mBookmarkFragment;
     private StockFragment mStockFragment;
     private String searchText;
     private int mMenuId;
@@ -194,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 hideFragments(mWeatherFragment);
             } else if (mStockFragment != null) {
                 hideFragments(mStockFragment);
+            } else if (mBookmarkFragment != null) {
+                hideFragments(mBookmarkFragment);
             }
         } else if (mMenuId == R.id.nav_stock) {
             mToolbar.setTitle(R.string.stock);
@@ -203,6 +207,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 hideFragments(mLocationFragment);
             } else if (mWeatherFragment != null) {
                 hideFragments(mWeatherFragment);
+            } else if (mBookmarkFragment != null) {
+                hideFragments(mBookmarkFragment);
             }
         } else if (mMenuId == R.id.nav_weather) {
             mToolbar.setTitle(R.string.weather);
@@ -212,10 +218,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 hideFragments(mLocationFragment);
             } else if (mStockFragment != null) {
                 hideFragments(mStockFragment);
+            } else if (mBookmarkFragment != null) {
+                hideFragments(mBookmarkFragment);
             }
         } else if (mMenuId == R.id.nav_bookmark) {
             mToolbar.setTitle(R.string.bookmarks);
             getSupportFragmentManager().popBackStack();
+            setBookmarkData();
             if (mLocationFragment != null) {
                 hideFragments(mLocationFragment);
             } else if (mStockFragment != null) {
@@ -324,6 +333,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mStockFragment.setArguments(bundleForStock);
             getSupportFragmentManager().beginTransaction().replace(R.id.stock_fragment_container, mStockFragment).addToBackStack(null).commit();
         }
+    }
+
+    private void setBookmarkData() {
+        mBookmarkFragment = new BookmarksFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.bookmark_fragment_container, mBookmarkFragment).addToBackStack(null).commit();
     }
 
     private void hideFragments(Fragment fragment) {
