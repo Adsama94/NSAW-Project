@@ -38,6 +38,8 @@
             android:id="@+id/tv_low"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:paddingEnd="16dp"
+            android:paddingRight="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="2dp"
@@ -71,6 +73,8 @@
             android:fontFamily="@font/patua_one"
             android:textSize="22sp"
             android:textStyle="bold"
+            android:paddingEnd="16dp"
+            android:paddingRight="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_highTemp"
             tools:text="-9\u2103" />

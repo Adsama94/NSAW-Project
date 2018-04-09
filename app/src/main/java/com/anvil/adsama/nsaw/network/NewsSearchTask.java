@@ -3,6 +3,7 @@ package com.anvil.adsama.nsaw.network;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.anvil.adsama.nsaw.activities.MainActivity;
 import com.anvil.adsama.nsaw.model.NewsAPI;
 
 import org.json.JSONArray;
@@ -16,9 +17,17 @@ public class NewsSearchTask extends AsyncTask<String, Void, ArrayList<NewsAPI>> 
     private static final String LOG_TAG = NewsSearchTask.class.getSimpleName();
     private NewsListener mNewsListener;
     private ArrayList<NewsAPI> newsList = new ArrayList<>();
+    private MainActivity mainActivity;
 
-    public NewsSearchTask(NewsListener newsListener) {
+    public NewsSearchTask(MainActivity activity, NewsListener newsListener) {
+        mainActivity = activity;
         mNewsListener = newsListener;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        mainActivity.showProgress();
     }
 
     @Override
@@ -54,5 +63,6 @@ public class NewsSearchTask extends AsyncTask<String, Void, ArrayList<NewsAPI>> 
     protected void onPostExecute(ArrayList<NewsAPI> newsAPIArrayList) {
         super.onPostExecute(newsAPIArrayList);
         mNewsListener.returnNewsList(newsAPIArrayList);
+        mainActivity.hideProgress();
     }
 }

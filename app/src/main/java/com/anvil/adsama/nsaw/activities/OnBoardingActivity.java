@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.anvil.adsama.nsaw.R;
@@ -20,8 +21,8 @@ public class OnBoardingActivity extends AppCompatActivity {
 
     @BindView(R.id.feature_pics)
     ViewPager mFeaturePager;
-    @BindView(R.id.tv_onBoard)
-    TextView mOnBoardTextView;
+    @BindView(R.id.btn_onBoard)
+    Button mOnBoardButton;
     @BindView(R.id.indicator)
     CircleIndicator mCircleIndicator;
     @BindView(R.id.tv_dynamic_text)
@@ -67,7 +68,7 @@ public class OnBoardingActivity extends AppCompatActivity {
     }
 
     private void initButton() {
-        mOnBoardTextView.setOnClickListener(new View.OnClickListener() {
+        mOnBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);

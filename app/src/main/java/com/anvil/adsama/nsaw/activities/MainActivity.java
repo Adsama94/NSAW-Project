@@ -6,21 +6,26 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,10 +81,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout mDrawerLayout;
     @BindView(R.id.recycler_news)
     RecyclerView mNewsRecyclerView;
+    @BindView(R.id.cv_news_layout_main)
+    ConstraintLayout mPrimaryLayout;
+    @BindView(R.id.fl_loading)
+    FrameLayout mLoadingLayout;
     CircleImageView mProfileImageView;
     TextView mProfileNameView;
     TextView mProfileEmailView;
-    GoogleApiClient mGoogleApiClient;
+    GoogleApiClient mGoogleSignInClient;
     LinearLayoutManager linearLayoutManager;
     private ArrayList<NewsAPI> mNewsAPIData;
     private ArrayList<DarkSkyCurrent> mDarkSkyData;
@@ -91,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private StockFragment mStockFragment;
     private String searchText;
     private int mMenuId;
+    SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,13 +125,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putInt("Menu Selection", mMenuId);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
-        mGoogleApiClient.connect();
+        mGoogleSignInClient = new GoogleApiClient.Builder(this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+        mGoogleSignInClient.connect();
         checkLocationPermission();
+    }
 
+    @Override
+    protected void onStop() {
+        mGoogleSignInClient.disconnect();
+        super.onStop();
     }
 
     @Override
@@ -137,22 +158,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        final android.support.v7.widget.SearchView mSearchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
+        mSearchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
         mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchText = query;
                 if (mMenuId == R.id.nav_news) {
-                    NewsSearchTask newsSearchTask = new NewsSearchTask(MainActivity.this);
+                    NewsSearchTask newsSearchTask = new NewsSearchTask(MainActivity.this, MainActivity.this);
                     newsSearchTask.execute(makeNewsSearchUrl());
+                    mSearchView.clearFocus();
                     mNewsAdapter.notifyDataSetChanged();
                 } else if (mMenuId == R.id.nav_stock) {
-                    StockSearchTask stockSearchTask = new StockSearchTask(MainActivity.this);
+                    StockSearchTask stockSearchTask = new StockSearchTask(MainActivity.this, MainActivity.this);
                     stockSearchTask.execute(makeStockSearchUrl());
+                    mSearchView.clearFocus();
+                    hideFragments(mStockFragment);
                     setStockData();
                     mStockFragment.refreshAdapter();
                 } else if (mMenuId == R.id.nav_weather) {
                     Toast.makeText(MainActivity.this, "HATT", Toast.LENGTH_SHORT).show();
+                    mSearchView.clearFocus();
                 }
                 return true;
             }
@@ -238,8 +263,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (mMenuId == R.id.nav_rating) {
             Uri uri = Uri.parse("market://details?id=" + getApplicationContext().getPackageName());
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-            // To count with Play market backstack, After pressing back button,
-            // to taken back to our application, we need to add following flags to intent.
             goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             try {
                 startActivity(goToMarket);
@@ -247,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
             }
         } else if (mMenuId == R.id.nav_logout) {
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+            Auth.GoogleSignInApi.signOut(mGoogleSignInClient).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(@NonNull Status status) {
                     Toast.makeText(getApplicationContext(), "Signed out " + status, Toast.LENGTH_LONG).show();
@@ -264,6 +287,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         NsawApp.getInstance().trackScreenView("MAIN/NEWS SCREEN");
+        NewsAsyncTask newsRequest = new NewsAsyncTask(this);
+        newsRequest.execute();
+        WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask(this);
+        weatherAsyncTask.execute();
+        StockAsyncTask stockAsyncTask = new StockAsyncTask(this);
+        stockAsyncTask.execute();
     }
 
     @Override
@@ -347,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
             }, REQUEST_CODE);
@@ -372,5 +401,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         WeatherWidget.setWeatherList(mDarkSkyData);
         intent.putParcelableArrayListExtra("weatherList", mDarkSkyData);
         sendBroadcast(intent);
+    }
+
+    public void showProgress() {
+        mPrimaryLayout.setVisibility(View.GONE);
+        mLoadingLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgress() {
+        mPrimaryLayout.setVisibility(View.VISIBLE);
+        mLoadingLayout.setVisibility(View.GONE);
     }
 }

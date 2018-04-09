@@ -1,6 +1,5 @@
 package com.anvil.adsama.nsaw.fragments;
 
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -87,6 +86,8 @@ public class DetailFragment extends Fragment {
                 }
                 if (weatherCurrentData != null) {
                     mCollapsingImageView.setImageDrawable(getResources().getDrawable(R.drawable.weather_nav));
+                    storingButton.setVisibility(View.GONE);
+                    removingButton.setVisibility(View.GONE);
                 }
             }
         }
@@ -244,6 +245,8 @@ public class DetailFragment extends Fragment {
             mIconView.setImageResource(R.drawable.ic_partly_sunny);
         } else if (weatherIconData.contains("Showers")) {
             mIconView.setImageResource(R.drawable.ic_showers);
+        } else if (weatherIconData.contains("Foggy")) {
+            mIconView.setImageResource(R.drawable.ic_foggy);
         }
     }
 
@@ -292,29 +295,6 @@ public class DetailFragment extends Fragment {
             appValues.put(NsawContract.NsawEntry.COLUMN_STOCK_VOLUME, alphaVantage.getVolume());
             if (getContext() != null)
                 getContext().getContentResolver().insert(NsawContract.NsawEntry.STOCK_CONTENT_URI, appValues);
-        } else if (weatherCurrentData != null) {
-            DarkSkyCurrent darkSkyCurrent = weatherCurrentData.get(weatherPosition);
-            appValues.put(NsawContract.NsawEntry.COLUMN_CURRENT_SUMMARY, darkSkyCurrent.getSummary());
-            appValues.put(NsawContract.NsawEntry.COLUMN_CURRENT_WEEKLY, darkSkyCurrent.getWeeklySummary());
-            appValues.put(NsawContract.NsawEntry.COLUMN_CURRENT_TEMPERATURE, darkSkyCurrent.getTemperature());
-            appValues.put(NsawContract.NsawEntry.COLUMN_CURRENT_ICON, darkSkyCurrent.getIcon());
-            appValues.put(NsawContract.NsawEntry.COLUMN_CURRENT_WIND, darkSkyCurrent.getWindSpeed());
-            appValues.put(NsawContract.NsawEntry.COLUMN_CURRENT_VISIBILITY, darkSkyCurrent.getVisibility());
-            if (getContext() != null)
-                getContext().getContentResolver().insert(NsawContract.NsawEntry.WEATHER_CURRENT_CONTENT_URI, appValues);
-        } else if (weatherDailyData != null) {
-            DarkSkyDaily darkSkyDaily = weatherDailyData.get(weatherPosition);
-            appValues.put(NsawContract.NsawEntry.COLUMN_DAILY_TIME, darkSkyDaily.getTime());
-            appValues.put(NsawContract.NsawEntry.COLUMN_DAILY_SUMMARY, darkSkyDaily.getSummary());
-            appValues.put(NsawContract.NsawEntry.COLUMN_DAILY_LOW, darkSkyDaily.getLowTemp());
-            appValues.put(NsawContract.NsawEntry.COLUMN_DAILY_HIGH, darkSkyDaily.getHighTemp());
-            appValues.put(NsawContract.NsawEntry.COLUMN_DAILY_APPARENT_HIGH, darkSkyDaily.getApparentHigh());
-            appValues.put(NsawContract.NsawEntry.COLUMN_DAILY_APPARENT_LOW, darkSkyDaily.getApparentLow());
-            appValues.put(NsawContract.NsawEntry.COLUMN_DAILY_DEW, darkSkyDaily.getDewPoint());
-            appValues.put(NsawContract.NsawEntry.COLUMN_DAILY_HUMIDITY, darkSkyDaily.getHumidity());
-            appValues.put(NsawContract.NsawEntry.COLUMN_DAILY_VISIBILITY, darkSkyDaily.getVisibility());
-            if (getContext() != null)
-                getContext().getContentResolver().insert(NsawContract.NsawEntry.WEATHER_DAILY_CONTENT_URI, appValues);
         }
     }
 
@@ -325,12 +305,6 @@ public class DetailFragment extends Fragment {
         } else if (stockData != null) {
             if (getContext() != null)
                 getContext().getContentResolver().delete(NsawContract.NsawEntry.STOCK_CONTENT_URI, null, null);
-        } else if (weatherCurrentData != null) {
-            if (getContext() != null)
-                getContext().getContentResolver().delete(NsawContract.NsawEntry.WEATHER_CURRENT_CONTENT_URI, null, null);
-        } else if (weatherDailyData != null) {
-            if (getContext() != null)
-                getContext().getContentResolver().delete(NsawContract.NsawEntry.WEATHER_DAILY_CONTENT_URI, null, null);
         }
     }
 

@@ -30,10 +30,10 @@ public class WeatherAsyncTask extends AsyncTask<Void, Void, ArrayList<DarkSkyCur
             if (weatherData != null) {
                 JSONObject currentData = weatherData.getJSONObject("currently");
                 String summary = currentData.optString("summary");
-                float temperature = Float.valueOf(currentData.optString("temperature"));
                 String icon = currentData.optString("icon");
-                float windSpeed = Float.valueOf(currentData.optString("windSpeed"));
-                float visibility = Float.valueOf(currentData.optString("visibility"));
+                float temperature = currentData.optInt("temperature");
+                float windSpeed = currentData.optInt("windSpeed");
+                float visibility = currentData.optInt("visibility");
                 JSONObject dailyData = weatherData.getJSONObject("daily");
                 String weeklySummary = dailyData.optString("summary");
                 JSONArray dailyArray = dailyData.getJSONArray("data");

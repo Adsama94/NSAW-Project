@@ -13,8 +13,6 @@ public class NsawProvider extends ContentProvider {
 
     static final int NEWS = 300;
     static final int STOCK = 301;
-    static final int CURRENT = 302;
-    static final int DAILY = 303;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private NsawDbHelper mNsawDbHelper;
 
@@ -23,8 +21,6 @@ public class NsawProvider extends ContentProvider {
         String authority = NsawContract.CONTENT_AUTHORITY;
         matcher.addURI(authority, NsawContract.PATH_NEWS, NEWS);
         matcher.addURI(authority, NsawContract.PATH_STOCK, STOCK);
-        matcher.addURI(authority, NsawContract.PATH_CURRENT, CURRENT);
-        matcher.addURI(authority, NsawContract.PATH_DAILY, DAILY);
         return matcher;
     }
 
@@ -47,14 +43,6 @@ public class NsawProvider extends ContentProvider {
                 cursor = mNsawDbHelper.getReadableDatabase().query(NsawContract.NsawEntry.TABLE_NAME_STOCK, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
-            case CURRENT: {
-                cursor = mNsawDbHelper.getReadableDatabase().query(NsawContract.NsawEntry.TABLE_NAME_CURRENT, projection, selection, selectionArgs, null, null, sortOrder);
-                break;
-            }
-            case DAILY: {
-                cursor = mNsawDbHelper.getReadableDatabase().query(NsawContract.NsawEntry.TABLE_NAME_DAILY, projection, selection, selectionArgs, null, null, sortOrder);
-                break;
-            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -73,10 +61,6 @@ public class NsawProvider extends ContentProvider {
                 return NsawContract.NsawEntry.NEWS_CONTENT_TYPE;
             case STOCK:
                 return NsawContract.NsawEntry.STOCK_CONTENT_TYPE;
-            case CURRENT:
-                return NsawContract.NsawEntry.WEATHER_CURRENT_CONTENT_TYPE;
-            case DAILY:
-                return NsawContract.NsawEntry.WEATHER_DAILY_CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -107,23 +91,6 @@ public class NsawProvider extends ContentProvider {
                 }
                 break;
             }
-            case CURRENT: {
-                long id = db.insert(NsawContract.NsawEntry.TABLE_NAME_CURRENT, null, values);
-                if (id > 0) {
-                    returnUri = NsawContract.NsawEntry.buildWeatherCurrentUri(id);
-                } else {
-                    throw new android.database.SQLException("Failed to insert row into weather current " + uri);
-                }
-                break;
-            }
-            case DAILY:
-                long id = db.insert(NsawContract.NsawEntry.TABLE_NAME_DAILY, null, values);
-                if (id > 0) {
-                    returnUri = NsawContract.NsawEntry.buildWeatherDailyUri(id);
-                } else {
-                    throw new android.database.SQLException("Failed to insert row into weather daily " + uri);
-                }
-                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -148,11 +115,6 @@ public class NsawProvider extends ContentProvider {
             case STOCK:
                 rowsDeleted = db.delete(NsawContract.NsawEntry.TABLE_NAME_STOCK, selection, selectionArgs);
                 break;
-            case CURRENT:
-                rowsDeleted = db.delete(NsawContract.NsawEntry.TABLE_NAME_CURRENT, selection, selectionArgs);
-                break;
-            case DAILY:
-                rowsDeleted = db.delete(NsawContract.NsawEntry.TABLE_NAME_DAILY, selection, selectionArgs);
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -174,11 +136,6 @@ public class NsawProvider extends ContentProvider {
             case STOCK:
                 rowsUpdated = db.update(NsawContract.NsawEntry.TABLE_NAME_STOCK, values, selection, selectionArgs);
                 break;
-            case CURRENT:
-                rowsUpdated = db.update(NsawContract.NsawEntry.TABLE_NAME_CURRENT, values, selection, selectionArgs);
-                break;
-            case DAILY:
-                rowsUpdated = db.update(NsawContract.NsawEntry.TABLE_NAME_DAILY, values, selection, selectionArgs);
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

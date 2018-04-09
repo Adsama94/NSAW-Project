@@ -24,8 +24,8 @@
     <string name="log_out">Log Out</string>
     <string name="location">Location</string>
     <string name="search">Search</string>
-    <string name="low">Low</string>
-    <string name="high">High</string>
+    <string name="low">LOW</string>
+    <string name="high">HIGH</string>
     <string name="login_background_image">login background image</string>
     <string name="login_logo_image">login logo image</string>
     <string name="the_week_ahead">THE WEEK AHEAD</string>
@@ -45,4 +45,7 @@
     <string name="read_full_article">READ FULL ARTICLE</string>
     <string name="dew_point">DEW POINT</string>
     <string name="humidity">HUMIDITY</string>
+    <string name="oops_looks_empty_here_n_kinda_like_your_life">Oops! Looks empty here.\n  Kinda like your life.</string>
+    <string name="empty_image">Empty Image</string>
+    <string name="please_wait_fetching_results">Please wait. Fetching results.</string>
 </resources>
