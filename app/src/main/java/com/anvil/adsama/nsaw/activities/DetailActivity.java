@@ -62,6 +62,7 @@ public class DetailActivity extends AppCompatActivity {
             String uidFromNews = data.getStringExtra("UID NEWS");
             String uidFromStock = data.getStringExtra("UID STOCK");
             String uidFromWeather = data.getStringExtra("UID WEATHER");
+            String locationName = data.getStringExtra("LOCATION");
             Bundle arguments = new Bundle();
             arguments.putInt("News Position", newsPosition);
             arguments.putInt("Stock Position", stockPosition);
@@ -72,6 +73,7 @@ public class DetailActivity extends AppCompatActivity {
             arguments.putString("NEWS", uidFromNews);
             arguments.putString("STOCK", uidFromStock);
             arguments.putString("WEATHER", uidFromWeather);
+            arguments.putString("LOCATION", locationName);
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction().add(R.id.detail_container, fragment).commit();

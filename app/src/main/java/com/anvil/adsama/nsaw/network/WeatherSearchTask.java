@@ -3,6 +3,7 @@ package com.anvil.adsama.nsaw.network;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.anvil.adsama.nsaw.fragments.WeatherFragment;
 import com.anvil.adsama.nsaw.model.DarkSkyCurrent;
 import com.anvil.adsama.nsaw.model.DarkSkyDaily;
 
@@ -18,9 +19,17 @@ public class WeatherSearchTask extends AsyncTask<String, Void, ArrayList<DarkSky
     private WeatherListener mWeatherListener;
     private ArrayList<DarkSkyCurrent> mWeatherCurrentList = new ArrayList<>();
     private ArrayList<DarkSkyDaily> weatherDailyList = new ArrayList<>();
+    private WeatherFragment mWeatherFragment;
 
-    public WeatherSearchTask(WeatherListener weatherListener) {
+    public WeatherSearchTask(WeatherFragment weatherFragment, WeatherListener weatherListener) {
+        mWeatherFragment = weatherFragment;
         mWeatherListener = weatherListener;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        mWeatherFragment.showProgress();
     }
 
     @Override
@@ -31,10 +40,10 @@ public class WeatherSearchTask extends AsyncTask<String, Void, ArrayList<DarkSky
             if (weatherData != null) {
                 JSONObject currentData = weatherData.getJSONObject("currently");
                 String summary = currentData.optString("summary");
-                float temperature = Float.valueOf(currentData.optString("temperature"));
                 String icon = currentData.optString("icon");
-                float windSpeed = Float.valueOf(currentData.optString("windSpeed"));
-                float visibility = Float.valueOf(currentData.optString("visibility"));
+                float temperature = currentData.optInt("temperature");
+                float windSpeed = currentData.optInt("windSpeed");
+                float visibility = currentData.optInt("visibility");
                 JSONObject dailyData = weatherData.getJSONObject("daily");
                 String weeklySummary = dailyData.optString("summary");
                 JSONArray dailyArray = dailyData.getJSONArray("data");
@@ -66,5 +75,6 @@ public class WeatherSearchTask extends AsyncTask<String, Void, ArrayList<DarkSky
     protected void onPostExecute(ArrayList<DarkSkyCurrent> darkSkyCurrents) {
         super.onPostExecute(darkSkyCurrents);
         mWeatherListener.returnWeatherList(darkSkyCurrents);
+        mWeatherFragment.hideProgress();
     }
 }

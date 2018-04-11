@@ -12,6 +12,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -46,6 +47,29 @@ public class BookmarksFragment extends Fragment {
     BookmarkStockAdapter stockAdapter;
 
     public BookmarksFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_bookmarks, container, false);
+        ButterKnife.bind(this, rootView);
+        initNewsAdapter();
+        initStockAdapter();
+        getLoaderManager().initLoader(NEWS_CURSOR_LOADER_ID, null, newsLoader);
+        getLoaderManager().initLoader(STOCK_CURSOR_LOADER_ID, null, stockLoader);
+        return rootView;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_search).setVisible(false);
+        super.onPrepareOptionsMenu(menu);
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> newsLoader = new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -122,15 +146,4 @@ public class BookmarksFragment extends Fragment {
             }
         }
     };
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_bookmarks, container, false);
-        ButterKnife.bind(this, rootView);
-        initNewsAdapter();
-        initStockAdapter();
-        getLoaderManager().initLoader(NEWS_CURSOR_LOADER_ID, null, newsLoader);
-        getLoaderManager().initLoader(STOCK_CURSOR_LOADER_ID, null, stockLoader);
-        return rootView;
-    }
 }

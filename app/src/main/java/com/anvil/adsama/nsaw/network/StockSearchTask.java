@@ -3,7 +3,7 @@ package com.anvil.adsama.nsaw.network;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.anvil.adsama.nsaw.activities.MainActivity;
+import com.anvil.adsama.nsaw.fragments.StockFragment;
 import com.anvil.adsama.nsaw.model.AlphaVantage;
 
 import org.json.JSONException;
@@ -17,17 +17,17 @@ public class StockSearchTask extends AsyncTask<String, Void, ArrayList<AlphaVant
     private static final String LOG_TAG = StockSearchTask.class.getSimpleName();
     private StockListener mStockListener;
     private ArrayList<AlphaVantage> stockList = new ArrayList<>();
-    private MainActivity mainActivity;
+    private StockFragment stockFragment;
 
-    public StockSearchTask(MainActivity activity, StockListener stockListener) {
-        mainActivity = activity;
+    public StockSearchTask(StockFragment fragment, StockListener stockListener) {
+        stockFragment = fragment;
         mStockListener = stockListener;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mainActivity.showProgress();
+        stockFragment.showProgress();
     }
 
     @Override
@@ -64,6 +64,6 @@ public class StockSearchTask extends AsyncTask<String, Void, ArrayList<AlphaVant
     protected void onPostExecute(ArrayList<AlphaVantage> alphaVantages) {
         super.onPostExecute(alphaVantages);
         mStockListener.returnStockList(alphaVantages);
-        mainActivity.hideProgress();
+        stockFragment.hideProgress();
     }
 }
