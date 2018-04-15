@@ -3,8 +3,8 @@ package com.anvil.adsama.nsaw.activities;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
@@ -21,7 +21,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +41,7 @@ import com.anvil.adsama.nsaw.network.StockAsyncTask;
 import com.anvil.adsama.nsaw.network.StockListener;
 import com.anvil.adsama.nsaw.network.WeatherAsyncTask;
 import com.anvil.adsama.nsaw.network.WeatherListener;
-import com.anvil.adsama.nsaw.widget.WeatherWidget;
+import com.anvil.adsama.nsaw.services.NotificationReceiver;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.api.Auth;
@@ -75,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     RecyclerView mNewsRecyclerView;
     @BindView(R.id.cv_news_layout_main)
     ConstraintLayout mPrimaryLayout;
-    @BindView(R.id.fl_loading)
-    FrameLayout mLoadingLayout;
+    @BindView(R.id.cl_loading)
+    ConstraintLayout mLoadingLayout;
     CircleImageView mProfileImageView;
     TextView mProfileNameView;
     TextView mProfileEmailView;
@@ -98,6 +97,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        if (savedInstanceState != null) {
+            searchText = savedInstanceState.getString("Search");
+            mMenuId = savedInstanceState.getString("Menu");
+        }
         setSupportActionBar(mToolbar);
         AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         mAdView.loadAd(adRequest);
@@ -108,17 +111,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setNavDrawer();
         mNavigationView.setCheckedItem(R.id.nav_news);
         NewsAsyncTask newsRequest = new NewsAsyncTask(this);
-        newsRequest.execute();
+        newsRequest.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask(this);
-        weatherAsyncTask.execute();
+        weatherAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         StockAsyncTask stockAsyncTask = new StockAsyncTask(this);
-        stockAsyncTask.execute();
+        stockAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putString("MENU NAME", mMenuId);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("Search", searchText);
+        outState.putString("Menu", mMenuId);
     }
 
     @Override
@@ -148,20 +152,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        MenuItem weatherSearch = menu.findItem(R.id.action_weather_search);
-        weatherSearch.setVisible(false);
         mSearchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
         mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchText = query;
-                if (mMenuId.matches(getString(R.string.news))) {
-                    NewsSearchTask newsSearchTask = new NewsSearchTask(MainActivity.this, MainActivity.this);
-                    newsSearchTask.execute(makeNewsSearchUrl());
-                    mSearchView.clearFocus();
-                    mSearchView.setQueryHint("Search news...");
-                    mNewsAdapter.notifyDataSetChanged();
-                }
+                NewsSearchTask newsSearchTask = new NewsSearchTask(MainActivity.this, MainActivity.this);
+                newsSearchTask.execute(makeNewsSearchUrl());
+                mSearchView.clearFocus();
+                mSearchView.setQueryHint("Search news...");
+                mNewsAdapter.notifyDataSetChanged();
                 return true;
             }
 
@@ -184,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (mMenuId.matches(getString(R.string.news))) {
             mToolbar.setTitle(R.string.news);
             getSupportFragmentManager().popBackStack();
+            sendNotificationBroadcast();
             hideFragments(mStockFragment);
             hideFragments(mBookmarkFragment);
             hideFragments(mWeatherFragment);
@@ -292,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mWeatherFragment = new WeatherFragment();
             mWeatherFragment.setArguments(bundleForWeather);
             getSupportFragmentManager().beginTransaction().replace(R.id.weather_fragment_container, mWeatherFragment).addToBackStack(null).commit();
-            sendWeatherBroadcast();
         }
     }
 
@@ -323,12 +323,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return "https://newsapi.org/v2/everything?q=" + searchText + "&language=en&pageSize=30&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
     }
 
-    private void sendWeatherBroadcast() {
-        Intent intent = new Intent(this, WeatherWidget.class);
-        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE\"");
-        WeatherWidget.setWeatherList(mDarkSkyData);
-        intent.putParcelableArrayListExtra("weatherList", mDarkSkyData);
-        sendBroadcast(intent);
+    private void sendNotificationBroadcast() {
+        if (mNewsAPIData != null && mStockData != null && mDarkSkyData != null) {
+            String newsExtra = mNewsAPIData.get(0).getTitle();
+            String stockExtra = mStockData.get(0).getCompanyName() + " High " + mStockData.get(0).getHigh();
+            float weatherExtra = mDarkSkyData.get(0).getTemperature();
+            Intent broadcastIntent = new Intent(this, NotificationReceiver.class);
+            broadcastIntent.setAction("notification.broadcast");
+            broadcastIntent.putExtra("news_extra", newsExtra);
+            broadcastIntent.putExtra("stock_extra", stockExtra);
+            broadcastIntent.putExtra("weather_extra", weatherExtra);
+            sendBroadcast(broadcastIntent);
+        }
     }
 
     public void showProgress() {

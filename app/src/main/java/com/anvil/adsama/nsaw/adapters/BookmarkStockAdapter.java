@@ -19,10 +19,12 @@ public class BookmarkStockAdapter extends RecyclerView.Adapter<BookmarkStockAdap
 
     private Context mContext;
     private ArrayList<AlphaVantage> mStockData;
+    private StockPositionInterface mPositionInterface;
 
-    public BookmarkStockAdapter(Context context, ArrayList<AlphaVantage> alphaVantage) {
+    public BookmarkStockAdapter(Context context, ArrayList<AlphaVantage> alphaVantage, StockPositionInterface positionInterface) {
         mContext = context;
         mStockData = alphaVantage;
+        mPositionInterface = positionInterface;
     }
 
     @NonNull
@@ -33,13 +35,19 @@ public class BookmarkStockAdapter extends RecyclerView.Adapter<BookmarkStockAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StockHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final StockHolder holder, int position) {
         AlphaVantage alphaVantage = mStockData.get(position);
         holder.companyName.setText(alphaVantage.getCompanyName());
         holder.refreshTime.setText(alphaVantage.getRefreshTime());
         holder.high.setText(String.valueOf(alphaVantage.getHigh()));
         holder.low.setText(String.valueOf(alphaVantage.getLow()));
         holder.volume.setText(String.valueOf(alphaVantage.getVolume()));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPositionInterface.getStockPosition(holder.getAdapterPosition());
+            }
+        });
     }
 
     @Override

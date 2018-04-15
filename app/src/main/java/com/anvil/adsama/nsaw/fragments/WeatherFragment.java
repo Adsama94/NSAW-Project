@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +28,7 @@ import com.anvil.adsama.nsaw.model.DarkSkyCurrent;
 import com.anvil.adsama.nsaw.model.DarkSkyDaily;
 import com.anvil.adsama.nsaw.network.WeatherListener;
 import com.anvil.adsama.nsaw.network.WeatherSearchTask;
+import com.anvil.adsama.nsaw.widget.WeatherWidget;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -46,9 +47,8 @@ import static android.app.Activity.RESULT_OK;
 public class WeatherFragment extends Fragment implements WeatherPositionInterface, WeatherListener {
 
     private static final String LOG_TAG = WeatherFragment.class.getSimpleName();
-    @BindView(R.id.fl_loading)
-    FrameLayout mLoadingLayout;
-
+    @BindView(R.id.cl_loading)
+    ConstraintLayout mLoadingLayout;
     @BindView(R.id.recycler_weather)
     RecyclerView mWeatherRecyclerView;
     ArrayList<DarkSkyCurrent> mWeatherCurrentList;
@@ -121,7 +121,7 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
                     Log.i(LOG_TAG, status.getStatusMessage());
                 }
             } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
+                Toast.makeText(getContext(), "CANCELLED BY USER", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -144,6 +144,7 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
             mWindSpeed.setText(String.valueOf(mWeatherData.getWindSpeed() + " m/s"));
             mVisibility.setText(String.valueOf(mWeatherData.getVisibility() + " Km"));
             mWeeklySummary.setText(mWeatherData.getWeeklySummary());
+            sendWeatherBroadcast();
         }
     }
 
@@ -234,6 +235,19 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
         mWeatherRecyclerView.setVisibility(View.VISIBLE);
         mLoadingLayout.setVisibility(View.GONE);
         refreshAdapter();
+    }
+
+    private void sendWeatherBroadcast() {
+        Intent intent = new Intent(getContext(), WeatherWidget.class);
+        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE\"");
+        if (locationName != null) {
+            WeatherWidget.setWeatherList(mWeatherCurrentList, locationName);
+        } else {
+            WeatherWidget.setWeatherList(mWeatherCurrentList, "New Delhi, India");
+        }
+        intent.putParcelableArrayListExtra("weatherList", mWeatherCurrentList);
+        if (getActivity() != null)
+            getActivity().sendBroadcast(intent);
     }
 
     @Override

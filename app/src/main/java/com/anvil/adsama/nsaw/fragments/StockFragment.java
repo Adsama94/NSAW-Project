@@ -1,21 +1,23 @@
 package com.anvil.adsama.nsaw.fragments;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.anvil.adsama.nsaw.R;
@@ -24,10 +26,13 @@ import com.anvil.adsama.nsaw.adapters.StockPositionInterface;
 import com.anvil.adsama.nsaw.adapters.StockRecyclerAdapter;
 import com.anvil.adsama.nsaw.analytics.NsawApp;
 import com.anvil.adsama.nsaw.model.AlphaVantage;
+import com.anvil.adsama.nsaw.network.CompanyList;
 import com.anvil.adsama.nsaw.network.StockListener;
 import com.anvil.adsama.nsaw.network.StockSearchTask;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,8 +49,8 @@ public class StockFragment extends Fragment implements StockPositionInterface, S
     TextView mCloseText;
     @BindView(R.id.text_refresh)
     TextView mRefreshText;
-    @BindView(R.id.fl_loading)
-    FrameLayout mLoadingLayout;
+    @BindView(R.id.cl_loading)
+    ConstraintLayout mLoadingLayout;
     @BindView(R.id.cv_stock_primary)
     CardView mPrimaryLayout;
     private StockRecyclerAdapter mStockAdapter;
@@ -82,13 +87,19 @@ public class StockFragment extends Fragment implements StockPositionInterface, S
         super.onPrepareOptionsMenu(menu);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchText = query;
-                StockSearchTask stockSearchTask = new StockSearchTask(StockFragment.this, StockFragment.this);
-                stockSearchTask.execute(makeStockSearchUrl());
-                searchView.clearFocus();
+                if (readStockList()) {
+                    StockSearchTask stockSearchTask = new StockSearchTask(StockFragment.this, StockFragment.this);
+                    stockSearchTask.execute(makeStockSearchUrl());
+                    searchView.clearFocus();
+                } else {
+                    searchView.clearFocus();
+                    showBakar(searchView);
+                }
                 return false;
             }
 
@@ -133,6 +144,21 @@ public class StockFragment extends Fragment implements StockPositionInterface, S
         mStockRecyclerView.setVisibility(View.VISIBLE);
         mLoadingLayout.setVisibility(View.GONE);
         refreshAdapter();
+    }
+
+    private void showBakar(View bakarView) {
+        Snackbar snackbar = Snackbar.make(bakarView, "UNREACHABLE QUERY", Snackbar.LENGTH_LONG);
+        View snackBarView = snackbar.getView();
+        if (getContext() != null)
+            snackBarView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+        snackbar.show();
+    }
+
+    private boolean readStockList() {
+        InputStream inputStream = getResources().openRawResource(R.raw.alphacompany);
+        CompanyList csvFile = new CompanyList(inputStream);
+        List scoreList = csvFile.read();
+        return scoreList.contains(searchText);
     }
 
     public String makeStockSearchUrl() {

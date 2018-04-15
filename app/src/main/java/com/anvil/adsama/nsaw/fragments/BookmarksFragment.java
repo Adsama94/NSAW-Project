@@ -1,5 +1,6 @@
 package com.anvil.adsama.nsaw.fragments;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,8 +19,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.anvil.adsama.nsaw.R;
+import com.anvil.adsama.nsaw.activities.DetailActivity;
 import com.anvil.adsama.nsaw.adapters.BookmarkNewsAdapter;
 import com.anvil.adsama.nsaw.adapters.BookmarkStockAdapter;
+import com.anvil.adsama.nsaw.adapters.NewsPositionInterface;
+import com.anvil.adsama.nsaw.adapters.StockPositionInterface;
 import com.anvil.adsama.nsaw.database.NsawContract;
 import com.anvil.adsama.nsaw.model.AlphaVantage;
 import com.anvil.adsama.nsaw.model.NewsAPI;
@@ -29,7 +33,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BookmarksFragment extends Fragment {
+public class BookmarksFragment extends Fragment implements NewsPositionInterface, StockPositionInterface {
 
     private static final int NEWS_CURSOR_LOADER_ID = 1;
     private static final int STOCK_CURSOR_LOADER_ID = 2;
@@ -102,7 +106,7 @@ public class BookmarksFragment extends Fragment {
 
     private void initNewsAdapter() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        newsAdapter = new BookmarkNewsAdapter(getContext(), newsData);
+        newsAdapter = new BookmarkNewsAdapter(getContext(), newsData, this);
         newsRecyclerView.setAdapter(newsAdapter);
         newsRecyclerView.setLayoutManager(linearLayoutManager);
         newsRecyclerView.setNestedScrollingEnabled(false);
@@ -110,7 +114,7 @@ public class BookmarksFragment extends Fragment {
 
     private void initStockAdapter() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        stockAdapter = new BookmarkStockAdapter(getContext(), stockData);
+        stockAdapter = new BookmarkStockAdapter(getContext(), stockData, this);
         stockRecyclerView.setAdapter(stockAdapter);
         stockRecyclerView.setLayoutManager(linearLayoutManager);
         stockRecyclerView.setNestedScrollingEnabled(false);
@@ -146,4 +150,22 @@ public class BookmarksFragment extends Fragment {
             }
         }
     };
+
+    @Override
+    public void getNewsPosition(int position) {
+        Intent detailIntent = new Intent(getContext(), DetailActivity.class);
+        detailIntent.putExtra("News Position", position);
+        detailIntent.putExtra("UID NEWS", "FROM NEWS");
+        detailIntent.putParcelableArrayListExtra("News List", newsData);
+        startActivity(detailIntent);
+    }
+
+    @Override
+    public void getStockPosition(int position) {
+        Intent detailIntent = new Intent(getContext(), DetailActivity.class);
+        detailIntent.putExtra("Stock Position", position);
+        detailIntent.putExtra("UID STOCK", "FROM STOCK");
+        detailIntent.putParcelableArrayListExtra("Stock List", stockData);
+        startActivity(detailIntent);
+    }
 }

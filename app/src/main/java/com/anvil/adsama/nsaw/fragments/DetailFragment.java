@@ -8,12 +8,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -34,9 +32,7 @@ import java.util.ArrayList;
 
 public class DetailFragment extends Fragment {
 
-    private static final String LOG_TAG = DetailFragment.class.getSimpleName();
-
-    TextView mDetailText, mDateText, mDewText, mHumidityText, mVisibilityText, mApparentHigh, mApparentLow, mSummary, mTemp;
+    TextView mDetailText, mDateText, mDewText, mHumidityText, mVisibilityText, mApparentHigh, mApparentLow, mSummary, mTemp, mCompany, mRefresh, mVolume, mHigh, mLow, mOpen, mClose;
     CollapsingToolbarLayout mAppBarLayout;
     ImageView mCollapsingImageView, mIconView;
     ConstraintLayout mNewsLayout, mStockLayout, mWeatherLayout;
@@ -110,6 +106,13 @@ public class DetailFragment extends Fragment {
         mApparentLow = rootView.findViewById(R.id.tv_app_low);
         mTemp = rootView.findViewById(R.id.tv_detail_temp);
         mIconView = rootView.findViewById(R.id.iv_icon_detail);
+        mCompany = rootView.findViewById(R.id.stock_detail_name);
+        mRefresh = rootView.findViewById(R.id.stock_detail_refresh);
+        mVolume = rootView.findViewById(R.id.stock_detail_volume);
+        mHigh = rootView.findViewById(R.id.stock_detail_high);
+        mLow = rootView.findViewById(R.id.stock_detail_low);
+        mOpen = rootView.findViewById(R.id.stock_detail_open);
+        mClose = rootView.findViewById(R.id.stock_detail_close);
         if (newsData != null) {
             displayNewsData();
             mNewsLayout.setVisibility(View.VISIBLE);
@@ -162,24 +165,14 @@ public class DetailFragment extends Fragment {
                     Toast.makeText(getContext(), "REMOVE KARAAA", Toast.LENGTH_SHORT).show();
                 }
             });
-            BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav_view);
-            bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.action_bottom_news:
-                            Toast.makeText(getContext(), "NOOJ", Toast.LENGTH_SHORT).show();
-                            break;
-                        case R.id.action_bottom_stock:
-                            Toast.makeText(getContext(), "STOOCK", Toast.LENGTH_SHORT).show();
-                            break;
-                        case R.id.action_bottom_weather:
-                            Toast.makeText(getContext(), "WAAAYTHUR", Toast.LENGTH_SHORT).show();
-                            break;
-                    }
-                    return true;
-                }
-            });
+            TextView bottomText = getActivity().findViewById(R.id.tv_bottom);
+            if (newsData != null) {
+                bottomText.setText(R.string.power_news);
+            } else if (stockData != null) {
+                bottomText.setText(R.string.power_stock);
+            } else if (weatherCurrentData != null) {
+                bottomText.setText(R.string.power_weather);
+            }
         }
     }
 
@@ -201,6 +194,15 @@ public class DetailFragment extends Fragment {
 
     private void displayStockData() {
         AlphaVantage alphaVantage = stockData.get(stockPosition);
+        if (alphaVantage != null) {
+            mCompany.setText(alphaVantage.getCompanyName());
+            mRefresh.setText(alphaVantage.getRefreshTime());
+            mVolume.setText(String.valueOf(alphaVantage.getVolume()));
+            mHigh.setText(String.valueOf(alphaVantage.getHigh()));
+            mLow.setText(String.valueOf(alphaVantage.getLow()));
+            mOpen.setText(String.valueOf(alphaVantage.getOpen()));
+            mClose.setText(String.valueOf(alphaVantage.getClose()));
+        }
     }
 
     private void displayWeatherData() {
@@ -208,21 +210,21 @@ public class DetailFragment extends Fragment {
         DarkSkyDaily skyDaily = weatherDailyData.get(weatherPosition);
         if (skyCurrent != null) {
             if (weatherPosition == 0) {
-                mTemp.setText(String.valueOf(skyCurrent.getTemperature()));
-                mApparentLow.setText(String.valueOf(skyDaily.getApparentLow()));
-                mApparentHigh.setText(String.valueOf(skyDaily.getApparentHigh()));
-                mVisibilityText.setText(String.valueOf(skyCurrent.getVisibility()));
+                mTemp.setText(String.valueOf(skyCurrent.getTemperature() + " \u2103"));
+                mApparentLow.setText(String.valueOf(skyDaily.getApparentLow() + " \u2103"));
+                mApparentHigh.setText(String.valueOf(skyDaily.getApparentHigh() + " \u2103"));
+                mVisibilityText.setText(String.valueOf(skyCurrent.getVisibility() + " Km"));
                 mHumidityText.setText(String.valueOf(skyDaily.getHumidity()));
-                mDewText.setText(String.valueOf(skyDaily.getDewPoint()));
+                mDewText.setText(String.valueOf(skyDaily.getDewPoint() + " \u2103"));
                 mSummary.setText(skyCurrent.getSummary());
                 setWeatherIcon();
             } else {
-                mTemp.setText(String.valueOf(skyDaily.getHighTemp()));
-                mApparentLow.setText(String.valueOf(skyDaily.getApparentLow()));
-                mApparentHigh.setText(String.valueOf(skyDaily.getApparentHigh()));
-                mVisibilityText.setText(String.valueOf(skyDaily.getVisibility()));
+                mTemp.setText(String.valueOf(skyDaily.getHighTemp() + " \u2103"));
+                mApparentLow.setText(String.valueOf(skyDaily.getApparentLow() + " \u2103"));
+                mApparentHigh.setText(String.valueOf(skyDaily.getApparentHigh() + " \u2103"));
+                mVisibilityText.setText(String.valueOf(skyDaily.getVisibility() + " Km"));
                 mHumidityText.setText(String.valueOf(skyDaily.getHumidity()));
-                mDewText.setText(String.valueOf(skyDaily.getDewPoint()));
+                mDewText.setText(String.valueOf(skyDaily.getDewPoint() + " \u2103"));
                 mSummary.setText(skyDaily.getSummary());
                 setWeatherIcon();
             }

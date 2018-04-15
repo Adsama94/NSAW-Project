@@ -1,9 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/stock_layout_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.DetailActivity">
+
+    <TextView
+        android:id="@+id/stock_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/patua_one"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="GOOGL" />
+
+    <TextView
+        android:id="@+id/stock_detail_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/patua_one"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_detail_refresh"
+        app:layout_constraintStart_toStartOf="@+id/tv_detail_refresh"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_refresh"
+        tools:text="15-04-2018" />
+
+    <TextView
+        android:id="@+id/tv_detail_volume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/patua_one"
+        android:text="@string/volume"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toStartOf="@+id/tv_detail_high"
+        app:layout_constraintStart_toEndOf="@+id/tv_detail_close"
+        app:layout_constraintTop_toBottomOf="@+id/stock_detail_name" />
+
+    <TextView
+        android:id="@+id/stock_detail_volume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/patua_one"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/stock_detail_low"
+        app:layout_constraintStart_toEndOf="@+id/stock_detail_close"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_volume"
+        tools:text="32.5" />
+
+    <TextView
+        android:id="@+id/tv_detail_low"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/patua_one"
+        android:text="@string/low"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stock_detail_high" />
+
+    <TextView
+        android:id="@+id/stock_detail_low"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/patua_one"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_low"
+        tools:text="93.1" />
+
+    <TextView
+        android:id="@+id/tv_detail_high"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:fontFamily="@font/patua_one"
+        android:text="@string/high"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stock_detail_name" />
+
+    <TextView
+        android:id="@+id/stock_detail_high"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/patua_one"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_high"
+        tools:text="85.4" />
+
+    <TextView
+        android:id="@+id/tv_detail_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/patua_one"
+        android:text="@string/open"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stock_detail_name" />
+
+    <TextView
+        android:id="@+id/stock_detail_open"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/patua_one"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_open"
+        tools:text="78.2" />
+
+    <TextView
+        android:id="@+id/tv_detail_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/patua_one"
+        android:text="@string/close"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stock_detail_open" />
+
+    <TextView
+        android:id="@+id/stock_detail_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/patua_one"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_close"
+        tools:text="99.1" />
+
+    <TextView
+        android:id="@+id/tv_detail_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/patua_one"
+        android:text="@string/refreshed_at"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stock_detail_volume" />
 
 </android.support.constraint.ConstraintLayout>

@@ -21,10 +21,12 @@ public class BookmarkNewsAdapter extends RecyclerView.Adapter<BookmarkNewsAdapte
 
     private Context mContext;
     private ArrayList<NewsAPI> mNewsData;
+    private NewsPositionInterface mPositionInterface;
 
-    public BookmarkNewsAdapter(Context context, ArrayList<NewsAPI> newsAPIArrayList) {
+    public BookmarkNewsAdapter(Context context, ArrayList<NewsAPI> newsAPIArrayList, NewsPositionInterface positionInterface) {
         mContext = context;
         mNewsData = newsAPIArrayList;
+        mPositionInterface = positionInterface;
     }
 
     @NonNull
@@ -35,11 +37,17 @@ public class BookmarkNewsAdapter extends RecyclerView.Adapter<BookmarkNewsAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NewsHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final NewsHolder holder, int position) {
         NewsAPI newsAPI = mNewsData.get(position);
         Picasso.with(mContext).load(newsAPI.getImageUrl()).into(holder.newsImage);
         holder.newsTitle.setText(newsAPI.getTitle());
         holder.newsDescription.setText(newsAPI.getDescription());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPositionInterface.getNewsPosition(holder.getAdapterPosition());
+            }
+        });
     }
 
     @Override

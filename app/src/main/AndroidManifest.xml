@@ -26,10 +26,6 @@
             android:name=".activities.OnBoardingActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
-
         <activity
             android:name=".activities.LoginActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -55,9 +51,18 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDqUQejNYM8SfBGUZiQWgWwb9oOiYRMX-M" />
 
-        <receiver android:name=".network.ConnectivityReceiver">
+        <receiver android:name=".services.ConnectivityReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".services.NotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="notification.broadcast" />
             </intent-filter>
         </receiver>
 
@@ -76,14 +81,10 @@
             android:enabled="true"
             android:exported="false" />
 
-        <service
-            android:name=".network.NetworkIntentService"
-            android:enabled="true"
-            android:exported="false" />
-
         <provider
             android:name="com.anvil.adsama.nsaw.database.NsawProvider"
-            android:authorities="com.anvil.adsama.nsaw" />
+            android:authorities="com.anvil.adsama.nsaw"
+            android:exported="false" />
 
     </application>
 

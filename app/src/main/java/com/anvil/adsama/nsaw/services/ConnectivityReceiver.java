@@ -1,4 +1,4 @@
-package com.anvil.adsama.nsaw.network;
+package com.anvil.adsama.nsaw.services;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

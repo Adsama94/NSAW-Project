@@ -49,4 +49,18 @@
     <string name="empty_image">Empty Image</string>
     <string name="please_wait_fetching_results">Please wait. Fetching results.</string>
     <string name="new_delhi_india">New Delhi, India</string>
+    <string name="power_news">powered by news api</string>
+    <string name="power_stock">powered by alpha vantage api</string>
+    <string name="power_weather">powered by dark sky api</string>
+    <string name="widget_image_icon">widget_image_icon</string>
+    <string name="powered_by_logo">powered_by_logo</string>
+    <string name="weather_search">Weather Search</string>
+    <string name="detail_weather_icon">detail_weather_icon</string>
+    <string name="refreshed_at">Refreshed At</string>
+    <string name="stock_results_powered_by_alpha_vantage_api">Stock results powered by Alpha Vantage API.</string>
+    <string name="weather_feed_powered_by_darksky_api">Weather feed powered by DarkSky API.</string>
+    <string name="news_feed_powered_by_newsapi">News feed powered by NewsAPI.</string>
+    <string name="github_logo">github_logo</string>
+    <string name="email_logo">email_logo</string>
+    <string name="nsaw_app_logo_splash_image_by_ocd_films">NSAW app logo,splash image by OCD Films.</string>
 </resources>

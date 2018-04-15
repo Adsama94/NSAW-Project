@@ -4,53 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="8dp"
     tools:context="com.anvil.adsama.nsaw.activities.SettingsActivity">
-
-    <TextView
-        android:id="@+id/tv_permission"
-        android:layout_width="wrap_content"
-        android:layout_height="21dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/patua_one"
-        android:text="@string/revoke_location_permission"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_darkMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/patua_one"
-        android:text="@string/dark_mode"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_permission" />
 
     <TextView
         android:id="@+id/tv_support"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/patua_one"
         android:text="@string/email_for_support_suggestions"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_darkMode" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_contribute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/patua_one"
         android:text="@string/contribute_to_nsaw_on_github"
@@ -58,26 +28,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_support" />
 
-    <Switch
-        android:id="@+id/permission_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="3dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_permission"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Switch
-        android:id="@+id/dark_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="3dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_darkMode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_darkMode" />
 
     <ImageView
         android:id="@+id/iv_support"
@@ -85,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:contentDescription="@string/email_logo"
         android:src="@drawable/ic_email"
         app:layout_constraintBottom_toBottomOf="@+id/tv_support"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,9 +47,64 @@
         android:layout_height="24dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:contentDescription="@string/github_logo"
         android:src="@drawable/github_dark"
         app:layout_constraintBottom_toBottomOf="@+id/tv_contribute"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_contribute" />
+
+    <TextView
+        android:id="@+id/news_thanks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/patua_one"
+        android:text="@string/news_feed_powered_by_newsapi"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_contribute" />
+
+    <TextView
+        android:id="@+id/weather_thanks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/patua_one"
+        android:text="@string/weather_feed_powered_by_darksky_api"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stock_thanks" />
+
+    <TextView
+        android:id="@+id/stock_thanks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/patua_one"
+        android:text="@string/stock_results_powered_by_alpha_vantage_api"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/news_thanks" />
+
+    <TextView
+        android:id="@+id/logo_thanks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/patua_one"
+        android:text="@string/nsaw_app_logo_splash_image_by_ocd_films"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weather_thanks" />
 
 </android.support.constraint.ConstraintLayout>
