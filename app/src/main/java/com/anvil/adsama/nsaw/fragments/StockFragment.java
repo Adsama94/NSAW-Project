@@ -27,8 +27,7 @@ import com.anvil.adsama.nsaw.adapters.StockRecyclerAdapter;
 import com.anvil.adsama.nsaw.analytics.NsawApp;
 import com.anvil.adsama.nsaw.model.AlphaVantage;
 import com.anvil.adsama.nsaw.network.CompanyList;
-import com.anvil.adsama.nsaw.network.StockListener;
-import com.anvil.adsama.nsaw.network.StockSearchTask;
+import com.anvil.adsama.nsaw.network.StockLoader;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -37,8 +36,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StockFragment extends Fragment implements StockPositionInterface, StockListener {
+public class StockFragment extends Fragment implements StockPositionInterface {
 
+    private static final int STOCK_LOADER_ID = 4;
     @BindView(R.id.recycler_stock)
     RecyclerView mStockRecyclerView;
     @BindView(R.id.text_company)
@@ -64,50 +64,40 @@ public class StockFragment extends Fragment implements StockPositionInterface, S
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mStockData = new ArrayList<>();
-        savedInstanceState = getArguments();
-        if (savedInstanceState != null) {
-            mStockData = savedInstanceState.getParcelableArrayList("AlphaVantage");
-        }
     }
+
+    private android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<AlphaVantage>> stockLoader = new android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<AlphaVantage>>() {
+        @NonNull
+        @Override
+        public android.support.v4.content.Loader<ArrayList<AlphaVantage>> onCreateLoader(int id, @Nullable Bundle args) {
+            showProgress();
+            if (searchText != null) {
+                return new StockLoader(getContext(), makeStockSearchUrl());
+            } else {
+                return new StockLoader(getContext(), null);
+            }
+        }
+
+        @Override
+        public void onLoadFinished(@NonNull android.support.v4.content.Loader<ArrayList<AlphaVantage>> loader, ArrayList<AlphaVantage> data) {
+            hideProgress();
+            mStockData = data;
+            initialiseStockData(mStockData);
+            setStockData(mStockData);
+        }
+
+        @Override
+        public void onLoaderReset(@NonNull android.support.v4.content.Loader<ArrayList<AlphaVantage>> loader) {
+            mStockAdapter.notifyDataSetChanged();
+        }
+    };
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
         ButterKnife.bind(this, rootView);
-        if (mStockData != null) {
-            initialiseStockData(mStockData);
-            setStockData(mStockData);
-        }
+        getLoaderManager().initLoader(STOCK_LOADER_ID, null, stockLoader);
         return rootView;
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchMenuItem.getActionView();
-        searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchText = query;
-                if (readStockList()) {
-                    StockSearchTask stockSearchTask = new StockSearchTask(StockFragment.this, StockFragment.this);
-                    stockSearchTask.execute(makeStockSearchUrl());
-                    searchView.clearFocus();
-                } else {
-                    searchView.clearFocus();
-                    showBakar(searchView);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
     }
 
     private void setStockData(ArrayList<AlphaVantage> stockData) {
@@ -129,10 +119,6 @@ public class StockFragment extends Fragment implements StockPositionInterface, S
         }
     }
 
-    public void refreshAdapter() {
-        if (mStockAdapter != null) mStockAdapter.notifyDataSetChanged();
-    }
-
     public void showProgress() {
         mPrimaryLayout.setVisibility(View.GONE);
         mStockRecyclerView.setVisibility(View.GONE);
@@ -143,15 +129,33 @@ public class StockFragment extends Fragment implements StockPositionInterface, S
         mPrimaryLayout.setVisibility(View.VISIBLE);
         mStockRecyclerView.setVisibility(View.VISIBLE);
         mLoadingLayout.setVisibility(View.GONE);
-        refreshAdapter();
     }
 
-    private void showBakar(View bakarView) {
-        Snackbar snackbar = Snackbar.make(bakarView, "UNREACHABLE QUERY", Snackbar.LENGTH_LONG);
-        View snackBarView = snackbar.getView();
-        if (getContext() != null)
-            snackBarView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
-        snackbar.show();
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchText = query;
+                if (readStockList()) {
+                    getLoaderManager().restartLoader(STOCK_LOADER_ID, null, stockLoader);
+                    searchView.clearFocus();
+                } else {
+                    searchView.clearFocus();
+                    showErrorBar(searchView);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     private boolean readStockList() {
@@ -180,11 +184,11 @@ public class StockFragment extends Fragment implements StockPositionInterface, S
         startActivity(detailIntent);
     }
 
-    @Override
-    public void returnStockList(ArrayList<AlphaVantage> alphaVantageList) {
-        mStockData = alphaVantageList;
-        refreshAdapter();
-        initialiseStockData(mStockData);
-        setStockData(mStockData);
+    private void showErrorBar(View errorView) {
+        Snackbar snackbar = Snackbar.make(errorView, "UNREACHABLE QUERY", Snackbar.LENGTH_LONG);
+        View snackBarView = snackbar.getView();
+        if (getContext() != null)
+            snackBarView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+        snackbar.show();
     }
 }

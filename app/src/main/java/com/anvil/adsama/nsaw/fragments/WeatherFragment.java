@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,8 +28,7 @@ import com.anvil.adsama.nsaw.adapters.WeatherPositionInterface;
 import com.anvil.adsama.nsaw.analytics.NsawApp;
 import com.anvil.adsama.nsaw.model.DarkSkyCurrent;
 import com.anvil.adsama.nsaw.model.DarkSkyDaily;
-import com.anvil.adsama.nsaw.network.WeatherListener;
-import com.anvil.adsama.nsaw.network.WeatherSearchTask;
+import com.anvil.adsama.nsaw.network.WeatherLoader;
 import com.anvil.adsama.nsaw.widget.WeatherWidget;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -44,9 +45,10 @@ import butterknife.ButterKnife;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-public class WeatherFragment extends Fragment implements WeatherPositionInterface, WeatherListener {
+public class WeatherFragment extends Fragment implements WeatherPositionInterface {
 
     private static final String LOG_TAG = WeatherFragment.class.getSimpleName();
+    private static final int WEATHER_LOADER_ID = 5;
     @BindView(R.id.cl_loading)
     ConstraintLayout mLoadingLayout;
     @BindView(R.id.recycler_weather)
@@ -74,7 +76,9 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
     @BindView(R.id.tv_location_name)
     TextView mLocationText;
     private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 2;
-    private String locationName;
+    private String mLocationName;
+    private double mLatitude;
+    private double mLongitude;
 
     public WeatherFragment() {
     }
@@ -83,47 +87,42 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        savedInstanceState = getArguments();
-        mWeatherCurrentList = new ArrayList<>();
-        if (savedInstanceState != null)
-            mWeatherCurrentList = savedInstanceState.getParcelableArrayList("DarkSkyCurrent");
-        if (mWeatherCurrentList != null)
-            mWeatherDailyList = mWeatherCurrentList.get(0).getDailyList();
     }
+
+    private android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<DarkSkyCurrent>> weatherLoader = new LoaderManager.LoaderCallbacks<ArrayList<DarkSkyCurrent>>() {
+        @NonNull
+        @Override
+        public Loader<ArrayList<DarkSkyCurrent>> onCreateLoader(int id, @Nullable Bundle args) {
+            showProgress();
+            if (mLocationName != null) {
+                return new WeatherLoader(getContext(), makeWeatherSearchUrl(mLatitude, mLongitude));
+            } else {
+                return new WeatherLoader(getContext(), null);
+            }
+        }
+
+        @Override
+        public void onLoadFinished(@NonNull Loader<ArrayList<DarkSkyCurrent>> loader, ArrayList<DarkSkyCurrent> data) {
+            hideProgress();
+            mWeatherCurrentList = data;
+            mWeatherDailyList = mWeatherCurrentList.get(0).getDailyList();
+            setWeatherData(mWeatherCurrentList);
+            initialiseWeather(mWeatherDailyList);
+            setWeatherIcon();
+        }
+
+        @Override
+        public void onLoaderReset(@NonNull Loader<ArrayList<DarkSkyCurrent>> loader) {
+            mWeatherAdapter.notifyDataSetChanged();
+        }
+    };
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.weather_fragment_layout, container, false);
         ButterKnife.bind(this, rootView);
-        setWeatherData(mWeatherCurrentList);
-        initialiseWeather(mWeatherDailyList);
-        setWeatherIcon();
+        getLoaderManager().initLoader(WEATHER_LOADER_ID, null, weatherLoader);
         return rootView;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                if (getContext() != null) {
-                    Place place = PlaceAutocomplete.getPlace(getContext(), data);
-                    locationName = (String) place.getAddress();
-                    LatLng newLat = place.getLatLng();
-                    double latitude = newLat.latitude;
-                    double longitude = newLat.longitude;
-                    mLocationText.setText(locationName);
-                    WeatherSearchTask weatherSearchTask = new WeatherSearchTask(this, this);
-                    weatherSearchTask.execute(makeWeatherSearchUrl(latitude, longitude));
-                }
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                if (getContext() != null) {
-                    Status status = PlaceAutocomplete.getStatus(getContext(), data);
-                    Log.i(LOG_TAG, status.getStatusMessage());
-                }
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(getContext(), "CANCELLED BY USER", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     private void initialiseWeather(ArrayList<DarkSkyDaily> weatherAPIArrayList) {
@@ -202,14 +201,27 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
     }
 
     @Override
-    public void getWeatherPosition(int position) {
-        Intent detailIntent = new Intent(getContext(), DetailActivity.class);
-        if (mWeatherCurrentList != null)
-            detailIntent.putParcelableArrayListExtra("Weather List", mWeatherCurrentList);
-        detailIntent.putExtra("UID WEATHER", "FROM WEATHER");
-        detailIntent.putExtra("Weather Position", position);
-        detailIntent.putExtra("LOCATION", locationName);
-        startActivity(detailIntent);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                if (getContext() != null) {
+                    Place place = PlaceAutocomplete.getPlace(getContext(), data);
+                    mLocationName = (String) place.getAddress();
+                    LatLng newLat = place.getLatLng();
+                    mLatitude = newLat.latitude;
+                    mLongitude = newLat.longitude;
+                    mLocationText.setText(mLocationName);
+                    getLoaderManager().restartLoader(WEATHER_LOADER_ID, null, weatherLoader);
+                }
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                if (getContext() != null) {
+                    Status status = PlaceAutocomplete.getStatus(getContext(), data);
+                    Log.i(LOG_TAG, status.getStatusMessage());
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(getContext(), "CANCELLED BY USER", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
@@ -237,26 +249,27 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
         refreshAdapter();
     }
 
+    @Override
+    public void getWeatherPosition(int position) {
+        Intent detailIntent = new Intent(getContext(), DetailActivity.class);
+        if (mWeatherCurrentList != null)
+            detailIntent.putParcelableArrayListExtra("Weather List", mWeatherCurrentList);
+        detailIntent.putExtra("UID WEATHER", "FROM WEATHER");
+        detailIntent.putExtra("Weather Position", position);
+        detailIntent.putExtra("LOCATION", mLocationName);
+        startActivity(detailIntent);
+    }
+
     private void sendWeatherBroadcast() {
         Intent intent = new Intent(getContext(), WeatherWidget.class);
         intent.setAction("android.appwidget.action.APPWIDGET_UPDATE\"");
-        if (locationName != null) {
-            WeatherWidget.setWeatherList(mWeatherCurrentList, locationName);
+        if (mLocationName != null) {
+            WeatherWidget.setWeatherList(mWeatherCurrentList, mLocationName);
         } else {
             WeatherWidget.setWeatherList(mWeatherCurrentList, "New Delhi, India");
         }
         intent.putParcelableArrayListExtra("weatherList", mWeatherCurrentList);
         if (getActivity() != null)
             getActivity().sendBroadcast(intent);
-    }
-
-    @Override
-    public void returnWeatherList(ArrayList<DarkSkyCurrent> darkSkyList) {
-        mWeatherCurrentList = darkSkyList;
-        mWeatherDailyList = mWeatherCurrentList.get(0).getDailyList();
-        setWeatherIcon();
-        setWeatherData(mWeatherCurrentList);
-        initialiseWeather(mWeatherDailyList);
-        refreshAdapter();
     }
 }

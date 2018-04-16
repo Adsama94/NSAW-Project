@@ -57,15 +57,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".services.NotificationReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="notification.broadcast" />
-            </intent-filter>
-        </receiver>
-
         <receiver android:name=".widget.WeatherWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

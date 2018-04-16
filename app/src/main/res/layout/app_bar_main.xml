@@ -33,4 +33,6 @@
 
     <include layout="@layout/content_main" />
 
+    <include layout="@layout/common_loading_layout" />
+
 </android.support.design.widget.CoordinatorLayout>
