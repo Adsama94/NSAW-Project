@@ -19,6 +19,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,32 +82,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private StockFragment mStockFragment;
     private String searchText;
     private String mMenuId;
-    SearchView mSearchView;
-    private LoaderManager.LoaderCallbacks<ArrayList<NewsAPI>> newsLoader = new LoaderManager.LoaderCallbacks<ArrayList<NewsAPI>>() {
-        @Override
-        public Loader<ArrayList<NewsAPI>> onCreateLoader(int id, Bundle args) {
-            showProgress();
-            if (searchText != null) {
-                return new NewsLoader(getApplicationContext(), makeNewsSearchUrl());
-            } else {
-                return new NewsLoader(getApplicationContext(), null);
-            }
-        }
-
-        @Override
-        public void onLoadFinished(Loader<ArrayList<NewsAPI>> loader, ArrayList<NewsAPI> data) {
-            if (data != null && !data.isEmpty()) {
-                mNewsAPIData = data;
-                initialiseNews(mNewsAPIData);
-                hideProgress();
-            }
-        }
-
-        @Override
-        public void onLoaderReset(Loader<ArrayList<NewsAPI>> loader) {
-            mNewsAdapter.notifyDataSetChanged();
-        }
-    };
+    private String updatedShit;
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         if (savedInstanceState != null) {
-            searchText = savedInstanceState.getString("Search");
             if (mMenuId != null) {
                 mMenuId = savedInstanceState.getString("Menu");
                 if (mMenuId.matches(getString(R.string.news))) {
@@ -126,10 +102,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else if (mMenuId.matches(getString(R.string.bookmarks))) {
                     mToolbar.setTitle(R.string.bookmarks);
                 }
-            }
-            if (mNewsAPIData != null) {
-                mNewsAPIData = savedInstanceState.getParcelableArrayList("NewsList");
-                initialiseNews(mNewsAPIData);
             }
         }
         setSupportActionBar(mToolbar);
@@ -167,12 +139,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private LoaderManager.LoaderCallbacks<ArrayList<NewsAPI>> newsLoader = new LoaderManager.LoaderCallbacks<ArrayList<NewsAPI>>() {
+        @Override
+        public Loader<ArrayList<NewsAPI>> onCreateLoader(int id, Bundle args) {
+            showProgress();
+            if (searchText != null) {
+                return new NewsLoader(getApplicationContext(), makeNewsSearchUrl());
+            } else {
+                return new NewsLoader(getApplicationContext(), null);
+            }
+        }
+
+        @Override
+        public void onLoadFinished(Loader<ArrayList<NewsAPI>> loader, ArrayList<NewsAPI> data) {
+            if (data != null && !data.isEmpty()) {
+                mNewsAPIData = data;
+                initialiseNews(mNewsAPIData);
+                hideProgress();
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<ArrayList<NewsAPI>> loader) {
+            mNewsAdapter.notifyDataSetChanged();
+        }
+    };
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("Search", searchText);
+        outState.putString("Search", mSearchView.getQuery().toString());
         outState.putString("Menu", mMenuId);
-        outState.putParcelableArrayList("NewsList", mNewsAPIData);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        updatedShit = savedInstanceState.getString("Search");
     }
 
     @Override
@@ -273,6 +276,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         mSearchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
+        if (!TextUtils.isEmpty(updatedShit)) {
+            searchItem.expandActionView();
+            mSearchView.setQuery(updatedShit, false);
+            mSearchView.clearFocus();
+        }
         mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -298,7 +306,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
     private void setBookmarkData() {
         mBookmarkFragment = new BookmarksFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.bookmark_fragment_container, mBookmarkFragment).addToBackStack(null).commit();
@@ -316,11 +323,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return "https://newsapi.org/v2/everything?q=" + searchText + "&language=en&pageSize=30&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
     }
 
-    private void setStockData() {
-        mStockFragment = new StockFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.stock_fragment_container, mStockFragment).addToBackStack(null).commit();
-    }
-
     private void showProgress() {
         mPrimaryLayout.setVisibility(View.GONE);
         mLoadingLayout.setVisibility(View.VISIBLE);
@@ -329,5 +331,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void hideProgress() {
         mPrimaryLayout.setVisibility(View.VISIBLE);
         mLoadingLayout.setVisibility(View.GONE);
+    }
+
+    private void setStockData() {
+        mStockFragment = new StockFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.stock_fragment_container, mStockFragment).addToBackStack(null).commit();
     }
 }

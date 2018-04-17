@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,6 +57,8 @@ public class StockFragment extends Fragment implements StockPositionInterface {
     private StockRecyclerAdapter mStockAdapter;
     private ArrayList<AlphaVantage> mStockData;
     private String searchText;
+    private String updatedShit;
+    private SearchView searchView;
 
     public StockFragment() {
     }
@@ -64,6 +67,14 @@ public class StockFragment extends Fragment implements StockPositionInterface {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
+        ButterKnife.bind(this, rootView);
+        getLoaderManager().initLoader(STOCK_LOADER_ID, null, stockLoader);
+        return rootView;
     }
 
     private android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<AlphaVantage>> stockLoader = new android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<AlphaVantage>>() {
@@ -93,11 +104,9 @@ public class StockFragment extends Fragment implements StockPositionInterface {
     };
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
-        ButterKnife.bind(this, rootView);
-        getLoaderManager().initLoader(STOCK_LOADER_ID, null, stockLoader);
-        return rootView;
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("Search", searchView.getQuery().toString());
     }
 
     private void setStockData(ArrayList<AlphaVantage> stockData) {
@@ -132,30 +141,10 @@ public class StockFragment extends Fragment implements StockPositionInterface {
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchMenuItem.getActionView();
-        searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchText = query;
-                if (readStockList()) {
-                    getLoaderManager().restartLoader(STOCK_LOADER_ID, null, stockLoader);
-                    searchView.clearFocus();
-                } else {
-                    searchView.clearFocus();
-                    showErrorBar(searchView);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null)
+            updatedShit = savedInstanceState.getString("Search");
     }
 
     private boolean readStockList() {
@@ -190,5 +179,37 @@ public class StockFragment extends Fragment implements StockPositionInterface {
         if (getContext() != null)
             snackBarView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
         snackbar.show();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchMenuItem.getActionView();
+        if (!TextUtils.isEmpty(updatedShit)) {
+            searchMenuItem.expandActionView();
+            searchView.setQuery(updatedShit, false);
+            searchView.clearFocus();
+        }
+        searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchText = query;
+                if (readStockList()) {
+                    getLoaderManager().restartLoader(STOCK_LOADER_ID, null, stockLoader);
+                    searchView.clearFocus();
+                } else {
+                    searchView.clearFocus();
+                    showErrorBar(searchView);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 }

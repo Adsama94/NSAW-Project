@@ -50,17 +50,37 @@ public class SplashActivity extends AppCompatActivity {
             builder.setMessage("Please enable Internet for latest feeds.");
             builder.setPositiveButton("Enable Wifi", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    SplashActivity.this.startActivityForResult(new Intent("android.settings.WIFI_SETTINGS"), 1);
+                    startActivityForResult(new Intent("android.settings.WIFI_SETTINGS"), 0);
                 }
             });
-            builder.setNegativeButton("Offline Mode", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    startActivity();
+                    finish();
                 }
             });
             this.mInternetDialog = builder.create();
             this.mInternetDialog.setCancelable(false);
             this.mInternetDialog.show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 0) {
+            if (connManager != null) {
+                networkInfo = connManager.getActiveNetworkInfo();
+                if (networkInfo != null) {
+                    if (networkInfo.isConnectedOrConnecting()) {
+                        startActivity();
+                    } else {
+                        showNoInternetDialog();
+                    }
+                }
+                showNoInternetDialog();
+            }
+        } else if (networkInfo == null) {
+            showNoInternetDialog();
         }
     }
 
