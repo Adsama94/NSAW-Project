@@ -10,6 +10,7 @@ import java.io.IOException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 class NewsParser {
 
@@ -21,7 +22,11 @@ class NewsParser {
         Request request = new Request.Builder().url(NEWS_URL).build();
         try {
             Response response = client.newCall(request).execute();
-            return new JSONObject(response.body().string());
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                String actualResponse = responseBody.string();
+                return new JSONObject(actualResponse);
+            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "NEWS EXCEPTION IS " + e);
@@ -34,7 +39,11 @@ class NewsParser {
         Request request = new Request.Builder().url(passedUrl).build();
         try {
             Response response = client.newCall(request).execute();
-            return new JSONObject(response.body().string());
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                String actualResponse = responseBody.string();
+                return new JSONObject(actualResponse);
+            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "NEWS SEARCH EXCEPTION IS " + e);

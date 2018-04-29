@@ -4,7 +4,6 @@
     <string name="onboard_stock">Keep track of the latest stock market trends.</string>
     <string name="onboard_weather">Get Real-Time location based weather forecasts.</string>
     <string name="onboarding_button">let\'s begin</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="github_url">https://github.com/Adsama94/NSAW-Project</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -12,8 +11,6 @@
     <string name="action_settings">Settings</string>
     <string name="contribute_to_nsaw_on_github">Contribute to NSAW on GitHub!</string>
     <string name="email_for_support_suggestions">Email for Support/Suggestions!</string>
-    <string name="dark_mode">Dark Mode</string>
-    <string name="revoke_location_permission">Revoke location permission</string>
     <string name="please_sign_in_to_continue">Please sign in to continue!</string>
     <string name="news">News</string>
     <string name="stock">Stock</string>
@@ -22,7 +19,6 @@
     <string name="settings">Settings</string>
     <string name="rate_us">Rate Us</string>
     <string name="log_out">Log Out</string>
-    <string name="location">Location</string>
     <string name="search">Search</string>
     <string name="low">LOW</string>
     <string name="high">HIGH</string>
@@ -33,12 +29,7 @@
     <string name="summary">SUMMARY</string>
     <string name="visibility">VISIBILITY</string>
     <string name="wind_speed">WIND SPEED</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
     <string name="volume">VOLUME</string>
-    <string name="lowFragment">LOW</string>
-    <string name="highFragment">HIGH</string>
     <string name="close">CLOSE</string>
     <string name="open">OPEN</string>
     <string name="collapsing_image">Collapsing Image</string>
@@ -54,7 +45,6 @@
     <string name="power_weather">powered by dark sky api</string>
     <string name="widget_image_icon">widget_image_icon</string>
     <string name="powered_by_logo">powered_by_logo</string>
-    <string name="weather_search">Weather Search</string>
     <string name="detail_weather_icon">detail_weather_icon</string>
     <string name="refreshed_at">Refreshed At</string>
     <string name="stock_results_powered_by_alpha_vantage_api">Stock results powered by Alpha Vantage API.</string>
@@ -63,4 +53,15 @@
     <string name="github_logo">github_logo</string>
     <string name="email_logo">email_logo</string>
     <string name="nsaw_app_logo_splash_image_by_ocd_films">NSAW app logo,splash image by OCD Films.</string>
+    <string name="news_search">Search News</string>
+    <string name="unreachable">UNREACHABLE QUERY</string>
+    <string name="exit">EXIT</string>
+    <string name="internet_disabled">Internet Disabled!</string>
+    <string name="latest_feed">Please enable Internet for latest feeds.</string>
+    <string name="enable_wifi">Enable WiFi</string>
+    <string name="store_db">Item bookmarked</string>
+    <string name="remove_db">Bookmark removed</string>
+    <string name="bookmarked_image">Bookmarked image</string>
+    <string name="news_result_image">News result image</string>
+    <string name="fragment_weather_icon">Fragment weather icon</string>
 </resources>

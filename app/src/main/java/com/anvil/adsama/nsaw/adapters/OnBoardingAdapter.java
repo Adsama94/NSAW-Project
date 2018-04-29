@@ -11,8 +11,8 @@ import com.anvil.adsama.nsaw.R;
 
 public class OnBoardingAdapter extends PagerAdapter {
 
-    private Context mContext;
-    private int[] mBackgroundImages = {R.drawable.news_nav, R.drawable.stock_nav, R.drawable.weather_nav};
+    private final Context mContext;
+    private final int[] mBackgroundImages = {R.drawable.news_nav, R.drawable.stock_nav, R.drawable.weather_nav};
 
     public OnBoardingAdapter(Context context) {
         mContext = context;

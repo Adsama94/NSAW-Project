@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 public class NsawContract {
 
     public static final String CONTENT_AUTHORITY = "com.anvil.adsama.nsaw";
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_NEWS = "news";
     public static final String PATH_STOCK = "stock";
 
@@ -50,7 +50,6 @@ public class NsawContract {
             return ContentUris.withAppendedId(STOCK_CONTENT_URI, id);
         }
 
-        public static final int COL_NEWS_ID = 0;
         public static final int COL_NEWS_AUTHOR = 1;
         public static final int COL_NEWS_TITLE = 2;
         public static final int COL_NEWS_DESCRIPTION = 3;
@@ -58,7 +57,6 @@ public class NsawContract {
         public static final int COL_NEWS_DATE = 5;
         public static final int COL_NEWS_IMGURL = 6;
 
-        public static final int COL_STOCK_ID = 0;
         public static final int COL_STOCK_NAME = 1;
         public static final int COL_STOCK_REFRESH = 2;
         public static final int COL_STOCK_OPEN = 3;

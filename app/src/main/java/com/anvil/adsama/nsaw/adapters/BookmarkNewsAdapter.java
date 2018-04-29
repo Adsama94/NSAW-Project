@@ -19,9 +19,9 @@ import java.util.ArrayList;
 
 public class BookmarkNewsAdapter extends RecyclerView.Adapter<BookmarkNewsAdapter.NewsHolder> {
 
-    private Context mContext;
-    private ArrayList<NewsAPI> mNewsData;
-    private NewsPositionInterface mPositionInterface;
+    private final Context mContext;
+    private final ArrayList<NewsAPI> mNewsData;
+    private final NewsPositionInterface mPositionInterface;
 
     public BookmarkNewsAdapter(Context context, ArrayList<NewsAPI> newsAPIArrayList, NewsPositionInterface positionInterface) {
         mContext = context;
@@ -76,9 +76,9 @@ public class BookmarkNewsAdapter extends RecyclerView.Adapter<BookmarkNewsAdapte
 
     class NewsHolder extends RecyclerView.ViewHolder {
 
-        ImageView newsImage;
-        TextView newsTitle;
-        TextView newsDescription;
+        final ImageView newsImage;
+        final TextView newsTitle;
+        final TextView newsDescription;
 
         NewsHolder(View itemView) {
             super(itemView);

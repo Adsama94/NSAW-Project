@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -70,11 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ConstraintLayout mPrimaryLayout;
     @BindView(R.id.cl_loading)
     ConstraintLayout mLoadingLayout;
-    CircleImageView mProfileImageView;
-    TextView mProfileNameView;
-    TextView mProfileEmailView;
-    GoogleApiClient mGoogleSignInClient;
-    LinearLayoutManager linearLayoutManager;
     private ArrayList<NewsAPI> mNewsAPIData;
     private NewsAdapter mNewsAdapter;
     private WeatherFragment mWeatherFragment;
@@ -139,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private LoaderManager.LoaderCallbacks<ArrayList<NewsAPI>> newsLoader = new LoaderManager.LoaderCallbacks<ArrayList<NewsAPI>>() {
+    private final LoaderManager.LoaderCallbacks<ArrayList<NewsAPI>> newsLoader = new LoaderManager.LoaderCallbacks<ArrayList<NewsAPI>>() {
         @Override
         public Loader<ArrayList<NewsAPI>> onCreateLoader(int id, Bundle args) {
             showProgress();
@@ -156,6 +153,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mNewsAPIData = data;
                 initialiseNews(mNewsAPIData);
                 hideProgress();
+            } else {
+                hideProgress();
+                showErrorBar(mPrimaryLayout);
             }
         }
 
@@ -251,53 +251,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(detailIntent);
     }
 
+    private GoogleApiClient mGoogleSignInClient;
+
     private void setNavDrawer() {
         View headerView = mNavigationView.getHeaderView(0);
-        mProfileImageView = headerView.findViewById(R.id.cv_profileImage);
-        mProfileNameView = headerView.findViewById(R.id.tv_profileName);
-        mProfileEmailView = headerView.findViewById(R.id.tv_emailId);
+        CircleImageView profileImageView = headerView.findViewById(R.id.cv_profileImage);
+        TextView profileNameView = headerView.findViewById(R.id.tv_profileName);
+        TextView profileEmailView = headerView.findViewById(R.id.tv_emailId);
         String profileName = getIntent().getStringExtra(NAME_EXTRA);
         String profileEmail = getIntent().getStringExtra(EMAIL_EXTRA);
         String profileImageURL = getIntent().getStringExtra(URL_EXTRA);
-        Picasso.with(getApplicationContext()).load(profileImageURL).into(mProfileImageView);
-        mProfileNameView.setText(profileName);
-        mProfileEmailView.setText(profileEmail);
+        Picasso.with(getApplicationContext()).load(profileImageURL).into(profileImageView);
+        profileNameView.setText(profileName);
+        profileEmailView.setText(profileEmail);
     }
 
     private void initialiseNews(ArrayList<NewsAPI> newsAPIArrayList) {
-        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mNewsAdapter = new NewsAdapter(newsAPIArrayList, this, this);
         mNewsRecyclerView.setAdapter(mNewsAdapter);
         mNewsRecyclerView.setLayoutManager(linearLayoutManager);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        mSearchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
-        if (!TextUtils.isEmpty(updatedShit)) {
-            searchItem.expandActionView();
-            mSearchView.setQuery(updatedShit, false);
-            mSearchView.clearFocus();
-        }
-        mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchText = query;
-                getLoaderManager().restartLoader(NEWS_LOADER_ID, null, newsLoader);
-                mSearchView.clearFocus();
-                mSearchView.setQueryHint("Search news...");
-                mNewsAdapter.notifyDataSetChanged();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-        return true;
     }
 
     private void setWeatherData() {
@@ -319,8 +292,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public String makeNewsSearchUrl() {
-        return "https://newsapi.org/v2/everything?q=" + searchText + "&language=en&pageSize=30&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        mSearchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
+        if (!TextUtils.isEmpty(updatedShit)) {
+            searchItem.expandActionView();
+            mSearchView.setQuery(updatedShit, false);
+            mSearchView.clearFocus();
+        }
+        mSearchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchText = query;
+                getLoaderManager().restartLoader(NEWS_LOADER_ID, null, newsLoader);
+                mSearchView.clearFocus();
+                mSearchView.setQueryHint(getString(R.string.news_search));
+                mNewsAdapter.notifyDataSetChanged();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return true;
     }
 
     private void showProgress() {
@@ -336,5 +334,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setStockData() {
         mStockFragment = new StockFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.stock_fragment_container, mStockFragment).addToBackStack(null).commit();
+    }
+
+    private String makeNewsSearchUrl() {
+        return "https://newsapi.org/v2/everything?q=" + searchText + "&language=en&pageSize=50&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
+    }
+
+    private void showErrorBar(View errorView) {
+        Snackbar snackbar = Snackbar.make(errorView, getString(R.string.unreachable), Snackbar.LENGTH_LONG);
+        View snackBarView = snackbar.getView();
+        if (getApplicationContext() != null)
+            snackBarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+        snackbar.show();
     }
 }

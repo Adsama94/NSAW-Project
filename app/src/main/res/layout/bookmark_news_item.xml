@@ -16,6 +16,7 @@
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/bookmarked_image"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

@@ -15,9 +15,9 @@ import java.util.ArrayList;
 
 public class StockRecyclerAdapter extends RecyclerView.Adapter<StockRecyclerAdapter.StockHolder> {
 
-    private ArrayList<AlphaVantage> mStockList;
-    private Context mContext;
-    private StockPositionInterface mPositionInterface;
+    private final ArrayList<AlphaVantage> mStockList;
+    private final Context mContext;
+    private final StockPositionInterface mPositionInterface;
 
     public StockRecyclerAdapter(ArrayList<AlphaVantage> stockList, Context context, StockPositionInterface positionInterface) {
         mStockList = stockList;
@@ -49,7 +49,7 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockRecyclerAdap
     @Override
     public int getItemCount() {
         if (mStockList != null) {
-            return 20;
+            return mStockList.size();
         } else {
             return 0;
         }
@@ -57,9 +57,9 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockRecyclerAdap
 
     class StockHolder extends RecyclerView.ViewHolder {
 
-        TextView high;
-        TextView low;
-        TextView volume;
+        final TextView high;
+        final TextView low;
+        final TextView volume;
 
         StockHolder(View itemView) {
             super(itemView);

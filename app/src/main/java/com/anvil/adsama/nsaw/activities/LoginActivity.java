@@ -38,10 +38,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final String NAME_EXTRA = "NAME_EXTRA";
     private static final int RC_SIGN_IN = 0;
     private static final int RC_ACCOUNTS = 7010;
+    private AlertDialog mAccountsDialog;
+    private GoogleApiClient mGoogleApiClient;
     @BindView(R.id.google_button)
     SignInButton mGoogleButton;
-    AlertDialog mAccountsDialog;
-    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

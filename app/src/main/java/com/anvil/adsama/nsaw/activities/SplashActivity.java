@@ -46,14 +46,14 @@ public class SplashActivity extends AppCompatActivity {
     private void showNoInternetDialog() {
         if (this.mInternetDialog == null || !this.mInternetDialog.isShowing()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Internet Disabled!");
-            builder.setMessage("Please enable Internet for latest feeds.");
-            builder.setPositiveButton("Enable Wifi", new DialogInterface.OnClickListener() {
+            builder.setTitle(getString(R.string.internet_disabled));
+            builder.setMessage(getString(R.string.latest_feed));
+            builder.setPositiveButton(getString(R.string.enable_wifi), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     startActivityForResult(new Intent("android.settings.WIFI_SETTINGS"), 0);
                 }
             });
-            builder.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
                 }

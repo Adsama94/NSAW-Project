@@ -17,9 +17,9 @@ import java.util.ArrayList;
 
 public class BookmarkStockAdapter extends RecyclerView.Adapter<BookmarkStockAdapter.StockHolder> {
 
-    private Context mContext;
-    private ArrayList<AlphaVantage> mStockData;
-    private StockPositionInterface mPositionInterface;
+    private final Context mContext;
+    private final ArrayList<AlphaVantage> mStockData;
+    private final StockPositionInterface mPositionInterface;
 
     public BookmarkStockAdapter(Context context, ArrayList<AlphaVantage> alphaVantage, StockPositionInterface positionInterface) {
         mContext = context;
@@ -77,11 +77,11 @@ public class BookmarkStockAdapter extends RecyclerView.Adapter<BookmarkStockAdap
 
     class StockHolder extends RecyclerView.ViewHolder {
 
-        TextView companyName;
-        TextView high;
-        TextView low;
-        TextView refreshTime;
-        TextView volume;
+        final TextView companyName;
+        final TextView high;
+        final TextView low;
+        final TextView refreshTime;
+        final TextView volume;
 
         StockHolder(View itemView) {
             super(itemView);

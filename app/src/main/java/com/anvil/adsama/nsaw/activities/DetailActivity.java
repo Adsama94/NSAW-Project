@@ -22,12 +22,6 @@ import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
 
-    ArrayList<NewsAPI> newsData = new ArrayList<>();
-    ArrayList<AlphaVantage> stockData = new ArrayList<>();
-    ArrayList<DarkSkyCurrent> weatherCurrentData = new ArrayList<>();
-    int newsPosition;
-    int stockPosition;
-    int weatherPosition;
     @BindView(R.id.detail_toolbar)
     Toolbar mToolbar;
 
@@ -53,6 +47,12 @@ public class DetailActivity extends AppCompatActivity {
     private void getDataFromIntent() {
         Intent data = getIntent();
         if (data != null) {
+            ArrayList<NewsAPI> newsData;
+            ArrayList<AlphaVantage> stockData;
+            ArrayList<DarkSkyCurrent> weatherCurrentData;
+            int newsPosition;
+            int stockPosition;
+            int weatherPosition;
             newsPosition = data.getIntExtra("News Position", 0);
             stockPosition = data.getIntExtra("Stock Position", 0);
             weatherPosition = data.getIntExtra("Weather Position", 0);

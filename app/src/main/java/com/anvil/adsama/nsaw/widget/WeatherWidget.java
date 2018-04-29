@@ -19,7 +19,7 @@ public class WeatherWidget extends AppWidgetProvider {
     private static String mLocationName;
     private static int mImageId;
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetId) {
+    private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetId) {
         if (mWeatherData != null) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weather_widget);
             views.setTextViewText(R.id.widget_temp, String.valueOf(mWeatherData.get(0).getTemperature() + " \u2103"));
@@ -129,16 +129,10 @@ public class WeatherWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
     }
 
     @Override
     public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
     }
 
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        super.onDeleted(context, appWidgetIds);
-    }
 }

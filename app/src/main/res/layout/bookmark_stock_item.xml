@@ -31,8 +31,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="88dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="88dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="48dp"
             android:fontFamily="@font/droid_sans"
@@ -44,11 +42,9 @@
             tools:text="PATA NAHI" />
 
         <TextView
-            android:id="@+id/tv_bookmark_volume"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="112dp"
             android:fontFamily="@font/patua_one"
             android:text="@string/volume"
@@ -64,7 +60,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/droid_sans"
             android:textStyle="bold"
@@ -78,7 +73,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/droid_sans"
             android:textStyle="bold"
@@ -105,10 +99,8 @@
             tools:text="92" />
 
         <TextView
-            android:id="@+id/tv_bookmark_high"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="112dp"
             android:fontFamily="@font/patua_one"
@@ -130,7 +122,6 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/tv_bookmark_stock_low"
             app:layout_constraintTop_toBottomOf="@+id/tv_bookmark_stock_name" />
-
 
     </android.support.constraint.ConstraintLayout>
 

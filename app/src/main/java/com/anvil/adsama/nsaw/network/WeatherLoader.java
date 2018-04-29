@@ -69,7 +69,8 @@ public class WeatherLoader extends AsyncTaskLoader<ArrayList<DarkSkyCurrent>> {
             }
             return weatherList;
         } else {
-            JSONObject weatherData = WeatherParser.getWeatherData();
+            WeatherParser weatherParser = new WeatherParser();
+            JSONObject weatherData = weatherParser.getWeatherData();
             try {
                 if (weatherData != null) {
                     JSONObject currentData = weatherData.getJSONObject("currently");

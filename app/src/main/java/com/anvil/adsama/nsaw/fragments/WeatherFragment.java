@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -104,11 +106,16 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
         @Override
         public void onLoadFinished(@NonNull Loader<ArrayList<DarkSkyCurrent>> loader, ArrayList<DarkSkyCurrent> data) {
             hideProgress();
-            mWeatherCurrentList = data;
-            mWeatherDailyList = mWeatherCurrentList.get(0).getDailyList();
-            setWeatherData(mWeatherCurrentList);
-            initialiseWeather(mWeatherDailyList);
-            setWeatherIcon();
+            if (data != null && !data.isEmpty()) {
+                mWeatherCurrentList = data;
+                mWeatherDailyList = mWeatherCurrentList.get(0).getDailyList();
+                setWeatherData(mWeatherCurrentList);
+                initialiseWeather(mWeatherDailyList);
+                setWeatherIcon();
+            } else {
+                hideProgress();
+                showErrorBar(mPrimaryLayout);
+            }
         }
 
         @Override
@@ -170,6 +177,14 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
         }
     }
 
+    private void showErrorBar(View errorView) {
+        Snackbar snackbar = Snackbar.make(errorView, getString(R.string.unreachable), Snackbar.LENGTH_LONG);
+        View snackBarView = snackbar.getView();
+        if (getContext() != null)
+            snackBarView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+        snackbar.show();
+    }
+
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_search).setVisible(false);
@@ -203,23 +218,27 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                if (getContext() != null) {
-                    Place place = PlaceAutocomplete.getPlace(getContext(), data);
-                    mLocationName = (String) place.getAddress();
-                    LatLng newLat = place.getLatLng();
-                    mLatitude = newLat.latitude;
-                    mLongitude = newLat.longitude;
-                    mLocationText.setText(mLocationName);
-                    getLoaderManager().restartLoader(WEATHER_LOADER_ID, null, weatherLoader);
-                }
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                if (getContext() != null) {
-                    Status status = PlaceAutocomplete.getStatus(getContext(), data);
-                    Log.i(LOG_TAG, status.getStatusMessage());
-                }
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(getContext(), "CANCELLED BY USER", Toast.LENGTH_SHORT).show();
+            switch (resultCode) {
+                case RESULT_OK:
+                    if (getContext() != null) {
+                        Place place = PlaceAutocomplete.getPlace(getContext(), data);
+                        mLocationName = (String) place.getAddress();
+                        LatLng newLat = place.getLatLng();
+                        mLatitude = newLat.latitude;
+                        mLongitude = newLat.longitude;
+                        mLocationText.setText(mLocationName);
+                        getLoaderManager().restartLoader(WEATHER_LOADER_ID, null, weatherLoader);
+                    }
+                    break;
+                case PlaceAutocomplete.RESULT_ERROR:
+                    if (getContext() != null) {
+                        Status status = PlaceAutocomplete.getStatus(getContext(), data);
+                        Log.i(LOG_TAG, status.getStatusMessage());
+                    }
+                    break;
+                case RESULT_CANCELED:
+                    Toast.makeText(getContext(), "CANCELLED BY USER", Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     }

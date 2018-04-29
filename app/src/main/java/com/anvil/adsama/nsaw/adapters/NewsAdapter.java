@@ -17,9 +17,9 @@ import java.util.ArrayList;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
-    private ArrayList<NewsAPI> mNewsList;
-    private Context mContext;
-    private NewsPositionInterface mPositionInterface;
+    private final ArrayList<NewsAPI> mNewsList;
+    private final Context mContext;
+    private final NewsPositionInterface mPositionInterface;
 
     public NewsAdapter(ArrayList<NewsAPI> newsList, Context context, NewsPositionInterface positionInterface) {
         mNewsList = newsList;
@@ -62,8 +62,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     class NewsHolder extends RecyclerView.ViewHolder {
 
-        ImageView mNewsImage;
-        TextView mNewsTitle;
+        final ImageView mNewsImage;
+        final TextView mNewsTitle;
 
         NewsHolder(View itemView) {
             super(itemView);

@@ -10,8 +10,9 @@ import java.io.IOException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
-public class StockParser {
+class StockParser {
 
     private static final String LOG_TAG = StockParser.class.getSimpleName();
     private static final String STOCK_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&outputsize=compact&apikey=A3G413PBID5IBS0W";
@@ -21,7 +22,11 @@ public class StockParser {
         Request request = new Request.Builder().url(STOCK_URL).build();
         try {
             Response response = client.newCall(request).execute();
-            return new JSONObject(response.body().string());
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                String actualResponse = responseBody.string();
+                return new JSONObject(actualResponse);
+            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "STOCK EXCEPTION IS " + e);
@@ -34,7 +39,11 @@ public class StockParser {
         Request request = new Request.Builder().url(passedUrl).build();
         try {
             Response response = client.newCall(request).execute();
-            return new JSONObject(response.body().string());
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                String actualResponse = responseBody.string();
+                return new JSONObject(actualResponse);
+            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "STOCK SEARCH EXCEPTION IS " + e);

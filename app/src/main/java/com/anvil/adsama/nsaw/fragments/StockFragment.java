@@ -92,9 +92,14 @@ public class StockFragment extends Fragment implements StockPositionInterface {
         @Override
         public void onLoadFinished(@NonNull android.support.v4.content.Loader<ArrayList<AlphaVantage>> loader, ArrayList<AlphaVantage> data) {
             hideProgress();
-            mStockData = data;
-            initialiseStockData(mStockData);
-            setStockData(mStockData);
+            if (data != null && !data.isEmpty()) {
+                mStockData = data;
+                initialiseStockData(mStockData);
+                setStockData(mStockData);
+            } else {
+                hideProgress();
+                showErrorBar(mPrimaryLayout);
+            }
         }
 
         @Override
@@ -174,7 +179,7 @@ public class StockFragment extends Fragment implements StockPositionInterface {
     }
 
     private void showErrorBar(View errorView) {
-        Snackbar snackbar = Snackbar.make(errorView, "UNREACHABLE QUERY", Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(errorView, getString(R.string.unreachable), Snackbar.LENGTH_LONG);
         View snackBarView = snackbar.getView();
         if (getContext() != null)
             snackBarView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,19 +31,17 @@ import java.util.ArrayList;
 
 public class DetailFragment extends Fragment {
 
-    TextView mDetailText, mDateText, mDewText, mHumidityText, mVisibilityText, mApparentHigh, mApparentLow, mSummary, mTemp, mCompany, mRefresh, mVolume, mHigh, mLow, mOpen, mClose;
-    CollapsingToolbarLayout mAppBarLayout;
-    ImageView mCollapsingImageView, mIconView;
-    ConstraintLayout mNewsLayout, mStockLayout, mWeatherLayout;
-    Button mNewsArticleButton;
-    ArrayList<NewsAPI> newsData = new ArrayList<>();
-    ArrayList<AlphaVantage> stockData = new ArrayList<>();
-    ArrayList<DarkSkyCurrent> weatherCurrentData = new ArrayList<>();
-    ArrayList<DarkSkyDaily> weatherDailyData = new ArrayList<>();
-    FloatingActionButton storingButton, sharingButton, removingButton;
-    int newsPosition;
-    int stockPosition;
-    int weatherPosition;
+    private TextView mDetailText, mDateText, mDewText, mHumidityText, mVisibilityText, mApparentHigh, mApparentLow, mSummary, mTemp, mCompany, mRefresh, mVolume, mHigh, mLow, mOpen, mClose;
+    private ImageView mIconView;
+    private Button mNewsArticleButton;
+    private ArrayList<NewsAPI> newsData = new ArrayList<>();
+    private ArrayList<AlphaVantage> stockData = new ArrayList<>();
+    private ArrayList<DarkSkyCurrent> weatherCurrentData = new ArrayList<>();
+    private ArrayList<DarkSkyDaily> weatherDailyData = new ArrayList<>();
+    private FloatingActionButton storingButton, removingButton;
+    private int newsPosition;
+    private int stockPosition;
+    private int weatherPosition;
 
     public DetailFragment() {
     }
@@ -71,8 +68,7 @@ public class DetailFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         Activity activity = getActivity();
         if (activity != null) {
-            mAppBarLayout = activity.findViewById(R.id.toolbar_layout);
-            mCollapsingImageView = activity.findViewById(R.id.iv_backdrop);
+            ImageView mCollapsingImageView = activity.findViewById(R.id.iv_backdrop);
             if (mCollapsingImageView != null) {
                 if (newsData != null) {
                     Picasso.with(getContext()).load(newsData.get(newsPosition).getImageUrl()).into(mCollapsingImageView);
@@ -92,9 +88,9 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        mNewsLayout = rootView.findViewById(R.id.news_layout_detail);
-        mStockLayout = rootView.findViewById(R.id.stock_layout_detail);
-        mWeatherLayout = rootView.findViewById(R.id.weather_layout_detail);
+        ConstraintLayout mNewsLayout = rootView.findViewById(R.id.news_layout_detail);
+        ConstraintLayout mStockLayout = rootView.findViewById(R.id.stock_layout_detail);
+        ConstraintLayout mWeatherLayout = rootView.findViewById(R.id.weather_layout_detail);
         mDetailText = rootView.findViewById(R.id.tv_detail_text);
         mDateText = rootView.findViewById(R.id.tv_detail_date);
         mNewsArticleButton = rootView.findViewById(R.id.button_article);
@@ -145,10 +141,10 @@ public class DetailFragment extends Fragment {
                     storingButton.setVisibility(View.GONE);
                     addToDatabase();
                     removingButton.setVisibility(View.VISIBLE);
-                    Toast.makeText(getContext(), "STORE KARAAA", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.store_db), Toast.LENGTH_SHORT).show();
                 }
             });
-            sharingButton = getActivity().findViewById(R.id.sharing_fab);
+            FloatingActionButton sharingButton = getActivity().findViewById(R.id.sharing_fab);
             sharingButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -162,7 +158,7 @@ public class DetailFragment extends Fragment {
                     removingButton.setVisibility(View.GONE);
                     storingButton.setVisibility(View.VISIBLE);
                     removeFromDatabase();
-                    Toast.makeText(getContext(), "REMOVE KARAAA", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.remove_db), Toast.LENGTH_SHORT).show();
                 }
             });
             TextView bottomText = getActivity().findViewById(R.id.tv_bottom);

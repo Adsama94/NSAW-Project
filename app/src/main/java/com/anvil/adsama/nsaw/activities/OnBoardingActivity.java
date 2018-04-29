@@ -27,7 +27,6 @@ public class OnBoardingActivity extends AppCompatActivity {
     CircleIndicator mCircleIndicator;
     @BindView(R.id.tv_dynamic_text)
     TextView mDynamicText;
-    OnBoardingAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +39,22 @@ public class OnBoardingActivity extends AppCompatActivity {
     }
 
     private void initPager() {
-        mPagerAdapter = new OnBoardingAdapter(this);
+        OnBoardingAdapter mPagerAdapter = new OnBoardingAdapter(this);
         mFeaturePager.setAdapter(mPagerAdapter);
         mCircleIndicator.setViewPager(mFeaturePager);
         mFeaturePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (position == 0) {
-                    mDynamicText.setText(R.string.onboard_news);
-                } else if (position == 1) {
-                    mDynamicText.setText(R.string.onboard_stock);
-                } else if (position == 2) {
-                    mDynamicText.setText(R.string.onboard_weather);
+                switch (position) {
+                    case 0:
+                        mDynamicText.setText(R.string.onboard_news);
+                        break;
+                    case 1:
+                        mDynamicText.setText(R.string.onboard_stock);
+                        break;
+                    case 2:
+                        mDynamicText.setText(R.string.onboard_weather);
+                        break;
                 }
             }
 

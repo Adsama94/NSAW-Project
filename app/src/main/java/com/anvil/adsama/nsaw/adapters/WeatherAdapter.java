@@ -16,9 +16,9 @@ import java.util.Date;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherHolder> {
 
-    private ArrayList<DarkSkyDaily> mWeatherList;
-    private Context mContext;
-    private WeatherPositionInterface mPositionInterface;
+    private final ArrayList<DarkSkyDaily> mWeatherList;
+    private final Context mContext;
+    private final WeatherPositionInterface mPositionInterface;
 
     public WeatherAdapter(ArrayList<DarkSkyDaily> weatherList, Context context, WeatherPositionInterface positionInterface) {
         mWeatherList = weatherList;
@@ -63,10 +63,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
 
     class WeatherHolder extends RecyclerView.ViewHolder {
 
-        TextView mDailySummary;
-        TextView mHighTemp;
-        TextView mLowTemp;
-        TextView mTime;
+        final TextView mDailySummary;
+        final TextView mHighTemp;
+        final TextView mLowTemp;
+        final TextView mTime;
 
         WeatherHolder(View itemView) {
             super(itemView);

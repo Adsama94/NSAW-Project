@@ -1,5 +1,7 @@
 package com.anvil.adsama.nsaw.network;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +11,7 @@ import java.util.List;
 
 public class CompanyList {
 
+    private static final String LOG_TAG = CompanyList.class.getSimpleName();
     private InputStream mInputStream;
 
     public CompanyList(InputStream inputStream) {
@@ -29,7 +32,7 @@ public class CompanyList {
             try {
                 mInputStream.close();
             } catch (IOException e) {
-                throw new RuntimeException("Error while closing input stream: " + e);
+                Log.e(LOG_TAG, "Error while closing input stream: " + e);
             }
         }
         return resultList;

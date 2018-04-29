@@ -11,8 +11,8 @@ import android.support.annotation.Nullable;
 
 public class NsawProvider extends ContentProvider {
 
-    static final int NEWS = 300;
-    static final int STOCK = 301;
+    private static final int NEWS = 300;
+    private static final int STOCK = 301;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private NsawDbHelper mNsawDbHelper;
 

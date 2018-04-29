@@ -2,20 +2,19 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/image_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#003867"
     tools:context="com.anvil.adsama.nsaw.activities.SplashActivity">
 
     <ImageView
-        android:id="@+id/splash_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerInside"
         android:src="@drawable/nsaw_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/nsaw_app_logo_splash_image_by_ocd_films"
         app:layout_constraintTop_toTopOf="parent" />
 
 
