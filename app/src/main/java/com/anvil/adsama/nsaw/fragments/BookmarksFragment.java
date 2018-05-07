@@ -37,8 +37,8 @@ public class BookmarksFragment extends Fragment implements NewsPositionInterface
 
     private static final int NEWS_CURSOR_LOADER_ID = 1;
     private static final int STOCK_CURSOR_LOADER_ID = 2;
-    ArrayList<NewsAPI> newsData = new ArrayList<>();
-    ArrayList<AlphaVantage> stockData = new ArrayList<>();
+    private ArrayList<NewsAPI> newsData = new ArrayList<>();
+    private ArrayList<AlphaVantage> stockData = new ArrayList<>();
     @BindView(R.id.rv_news_horizontal)
     RecyclerView newsRecyclerView;
     @BindView(R.id.rv_stock_horizontal)
@@ -47,8 +47,8 @@ public class BookmarksFragment extends Fragment implements NewsPositionInterface
     ConstraintLayout mainLayout;
     @BindView(R.id.fl_empty)
     FrameLayout emptyLayout;
-    BookmarkNewsAdapter newsAdapter;
-    BookmarkStockAdapter stockAdapter;
+    private BookmarkNewsAdapter newsAdapter;
+    private BookmarkStockAdapter stockAdapter;
 
     public BookmarksFragment() {
     }
@@ -134,9 +134,6 @@ public class BookmarksFragment extends Fragment implements NewsPositionInterface
         public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
             if (data.getCount() > 0) {
                 stockAdapter.addStock(data);
-            } else {
-                mainLayout.setVisibility(View.GONE);
-                emptyLayout.setVisibility(View.VISIBLE);
             }
         }
 

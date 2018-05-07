@@ -35,6 +35,8 @@
                     android:fontFamily="@font/patua_one"
                     android:text="@string/new_delhi_india"
                     android:textSize="18sp"
+                    android:ellipsize="end"
+                    android:maxLength="22"
                     app:layout_constraintBottom_toTopOf="@+id/iv_icon"
                     app:layout_constraintEnd_toEndOf="@+id/iv_icon"
                     app:layout_constraintTop_toTopOf="@+id/tv_temperature"

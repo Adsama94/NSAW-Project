@@ -49,7 +49,7 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockRecyclerAdap
     @Override
     public int getItemCount() {
         if (mStockList != null) {
-            return mStockList.size();
+            return 30;
         } else {
             return 0;
         }

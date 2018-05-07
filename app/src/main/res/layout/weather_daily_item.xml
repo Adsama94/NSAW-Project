@@ -84,14 +84,15 @@
             android:id="@+id/tv_daily_summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="84dp"
             android:fontFamily="@font/patua_one"
-            android:maxLines="3"
+            android:ellipsize="marquee"
+            android:maxLength="40"
+            android:singleLine="true"
             app:layout_constraintEnd_toEndOf="@+id/tv_time"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/tv_time"
-            app:layout_constraintTop_toBottomOf="@+id/tv_time"
-            tools:text="SNOWY AND COLD" />
+            app:layout_constraintTop_toTopOf="@+id/tv_low"
+            tools:text="SNOWY AND COLD AND AND AND" />
 
     </android.support.constraint.ConstraintLayout>
 
