@@ -1,6 +1,12 @@
 # NSAW-Project
 NSAW is an all in one News, Stock and Weather feed application.  Built as a final project for Udacity's Android Developer Nanodegree.
 
+# Google APIs Used
+OAuth API for seamless G+ Sign in.
+<br>AdMob API for displaying banner ads.
+<br>Analytics API for tracking in-app events.
+<br>Places API for providing location searches.
+
 
 # License
 You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
