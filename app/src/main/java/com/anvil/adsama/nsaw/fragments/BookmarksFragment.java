@@ -95,7 +95,7 @@ public class BookmarksFragment extends Fragment implements NewsPositionInterface
 
         @Override
         public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-            if (newsData != null) {
+            if (newsData != null && stockData == null) {
                 newsAdapter.notifyDataSetChanged();
             } else {
                 mainLayout.setVisibility(View.GONE);
@@ -118,6 +118,16 @@ public class BookmarksFragment extends Fragment implements NewsPositionInterface
         stockRecyclerView.setAdapter(stockAdapter);
         stockRecyclerView.setLayoutManager(linearLayoutManager);
         stockRecyclerView.setNestedScrollingEnabled(false);
+    }
+
+    private void displayEmptyLayout() {
+        if (newsData == null && stockData == null) {
+            mainLayout.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        } else if (newsData != null && stockData == null) {
+            mainLayout.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> stockLoader = new LoaderManager.LoaderCallbacks<Cursor>() {

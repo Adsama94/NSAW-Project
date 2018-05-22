@@ -51,12 +51,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDqUQejNYM8SfBGUZiQWgWwb9oOiYRMX-M" />
 
-        <receiver android:name=".services.ConnectivityReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-
         <receiver android:name=".widget.WeatherWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

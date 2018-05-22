@@ -3,9 +3,12 @@ package com.anvil.adsama.nsaw.activities;
 import android.app.LoaderManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
@@ -28,15 +31,18 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anvil.adsama.nsaw.BuildConfig;
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.adapters.NewsAdapter;
 import com.anvil.adsama.nsaw.adapters.NewsPositionInterface;
 import com.anvil.adsama.nsaw.analytics.NsawApp;
+import com.anvil.adsama.nsaw.database.NewsSearchProvider;
 import com.anvil.adsama.nsaw.fragments.BookmarksFragment;
 import com.anvil.adsama.nsaw.fragments.StockFragment;
 import com.anvil.adsama.nsaw.fragments.WeatherFragment;
 import com.anvil.adsama.nsaw.model.NewsAPI;
 import com.anvil.adsama.nsaw.network.NewsLoader;
+import com.anvil.adsama.nsaw.services.ConnectivityReceiver;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.api.Auth;
@@ -58,84 +64,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String URL_EXTRA = "URL_EXTRA";
     private static final String NAME_EXTRA = "NAME_EXTRA";
     private static final int NEWS_LOADER_ID = 3;
-    @BindView(R.id.adView)
-    AdView mAdView;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.nav_view)
-    NavigationView mNavigationView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
-    @BindView(R.id.recycler_news)
-    RecyclerView mNewsRecyclerView;
-    @BindView(R.id.cv_news_layout_main)
-    ConstraintLayout mPrimaryLayout;
-    @BindView(R.id.cl_loading)
-    ConstraintLayout mLoadingLayout;
-    private ArrayList<NewsAPI> mNewsAPIData;
-    private NewsAdapter mNewsAdapter;
-    private WeatherFragment mWeatherFragment;
-    private BookmarksFragment mBookmarkFragment;
-    private StockFragment mStockFragment;
-    private String searchText;
-    private String mMenuId;
-    private String updatedShit;
-    private SearchView mSearchView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        if (savedInstanceState != null) {
-            if (mMenuId != null) {
-                mMenuId = savedInstanceState.getString("Menu");
-                if (mMenuId.matches(getString(R.string.news))) {
-                    mToolbar.setTitle(R.string.news);
-                } else if (mMenuId.matches(getString(R.string.stock))) {
-                    mToolbar.setTitle(R.string.stock);
-                } else if (mMenuId.matches(getString(R.string.weather))) {
-                    mToolbar.setTitle(R.string.weather);
-                } else if (mMenuId.matches(getString(R.string.bookmarks))) {
-                    mToolbar.setTitle(R.string.bookmarks);
-                }
-            }
-        }
-        setSupportActionBar(mToolbar);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
-        mAdView.loadAd(adRequest);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        mNavigationView.setNavigationItemSelectedListener(this);
-        setNavDrawer();
-        mNavigationView.setCheckedItem(R.id.nav_news);
-        getLoaderManager().initLoader(NEWS_LOADER_ID, null, newsLoader);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        mGoogleSignInClient = new GoogleApiClient.Builder(this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
-        mGoogleSignInClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        mGoogleSignInClient.disconnect();
-        super.onStop();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     private final LoaderManager.LoaderCallbacks<ArrayList<NewsAPI>> newsLoader = new LoaderManager.LoaderCallbacks<ArrayList<NewsAPI>>() {
         @Override
         public Loader<ArrayList<NewsAPI>> onCreateLoader(int id, Bundle args) {
@@ -164,6 +92,89 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mNewsAdapter.notifyDataSetChanged();
         }
     };
+    @BindView(R.id.adView)
+    AdView mAdView;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.nav_view)
+    NavigationView mNavigationView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.recycler_news)
+    RecyclerView mNewsRecyclerView;
+    @BindView(R.id.cv_news_layout_main)
+    ConstraintLayout mPrimaryLayout;
+    @BindView(R.id.cl_loading)
+    ConstraintLayout mLoadingLayout;
+    private ConnectivityReceiver mConnectivityReceiver;
+    private ArrayList<NewsAPI> mNewsAPIData;
+    private NewsAdapter mNewsAdapter;
+    private WeatherFragment mWeatherFragment;
+    private BookmarksFragment mBookmarkFragment;
+    private StockFragment mStockFragment;
+    private String searchText;
+    private String mMenuId;
+    private String updatedShit;
+    private SearchView mSearchView;
+    private GoogleApiClient mGoogleSignInClient;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        mGoogleSignInClient = new GoogleApiClient.Builder(this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+        mGoogleSignInClient.connect();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        if (savedInstanceState != null) {
+            if (mMenuId != null) {
+                mMenuId = savedInstanceState.getString("Menu");
+                if (mMenuId.matches(getString(R.string.news))) {
+                    mToolbar.setTitle(R.string.news);
+                } else if (mMenuId.matches(getString(R.string.stock))) {
+                    mToolbar.setTitle(R.string.stock);
+                } else if (mMenuId.matches(getString(R.string.weather))) {
+                    mToolbar.setTitle(R.string.weather);
+                } else if (mMenuId.matches(getString(R.string.bookmarks))) {
+                    mToolbar.setTitle(R.string.bookmarks);
+                }
+            }
+        }
+        IntentFilter mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        mConnectivityReceiver = new ConnectivityReceiver();
+        registerReceiver(mConnectivityReceiver, mIntentFilter);
+        setSupportActionBar(mToolbar);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        mNavigationView.setNavigationItemSelectedListener(this);
+        setNavDrawer();
+        mNavigationView.setCheckedItem(R.id.nav_news);
+        getLoaderManager().initLoader(NEWS_LOADER_ID, null, newsLoader);
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleSignInClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -176,6 +187,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         updatedShit = savedInstanceState.getString("Search");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mConnectivityReceiver);
     }
 
     @Override
@@ -251,8 +268,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(detailIntent);
     }
 
-    private GoogleApiClient mGoogleSignInClient;
-
     private void setNavDrawer() {
         View headerView = mNavigationView.getHeaderView(0);
         CircleImageView profileImageView = headerView.findViewById(R.id.cv_profileImage);
@@ -306,6 +321,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchText = query;
+                SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(getApplicationContext(), NewsSearchProvider.AUTHORITY, NewsSearchProvider.MODE);
+                searchRecentSuggestions.saveRecentQuery(searchText, null);
                 getLoaderManager().restartLoader(NEWS_LOADER_ID, null, newsLoader);
                 mSearchView.clearFocus();
                 mSearchView.setQueryHint(getString(R.string.news_search));
@@ -337,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private String makeNewsSearchUrl() {
-        return "https://newsapi.org/v2/everything?q=" + searchText + "&language=en&pageSize=50&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
+        return "https://newsapi.org/v2/everything?q=" + searchText + "&language=en&pageSize=50&sortBy=publishedAt&apiKey=" + BuildConfig.NEWS_KEY;
     }
 
     private void showErrorBar(View errorView) {

@@ -2,6 +2,8 @@ package com.anvil.adsama.nsaw.network;
 
 import android.util.Log;
 
+import com.anvil.adsama.nsaw.BuildConfig;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,7 +17,7 @@ import okhttp3.ResponseBody;
 class StockParser {
 
     private static final String LOG_TAG = StockParser.class.getSimpleName();
-    private static final String STOCK_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&outputsize=compact&apikey=A3G413PBID5IBS0W";
+    private static final String STOCK_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&outputsize=compact&apikey=" + BuildConfig.STOCK_KEY;
 
     JSONObject getStockData() {
         OkHttpClient client = new OkHttpClient();

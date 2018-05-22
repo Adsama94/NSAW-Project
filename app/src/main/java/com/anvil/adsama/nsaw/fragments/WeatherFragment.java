@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anvil.adsama.nsaw.BuildConfig;
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.activities.DetailActivity;
 import com.anvil.adsama.nsaw.adapters.WeatherAdapter;
@@ -250,7 +251,7 @@ public class WeatherFragment extends Fragment implements WeatherPositionInterfac
     }
 
     public String makeWeatherSearchUrl(double latitude, double longitude) {
-        return "https://api.darksky.net/forecast/6baefba9f2a860bd68ecb53fd8024caa/" + latitude + "," + longitude + "?units=si";
+        return "https://api.darksky.net/forecast/" + BuildConfig.WEATHER_KEY + "/" + latitude + "," + longitude + "?units=si";
     }
 
     public void showProgress() {

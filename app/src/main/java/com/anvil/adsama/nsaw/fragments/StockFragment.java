@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.anvil.adsama.nsaw.BuildConfig;
 import com.anvil.adsama.nsaw.R;
 import com.anvil.adsama.nsaw.activities.DetailActivity;
 import com.anvil.adsama.nsaw.adapters.StockPositionInterface;
@@ -160,7 +161,7 @@ public class StockFragment extends Fragment implements StockPositionInterface {
     }
 
     public String makeStockSearchUrl() {
-        return "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + searchText + "&outputsize=compact&apikey=A3G413PBID5IBS0W";
+        return "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + searchText + "&outputsize=compact&apikey=" + BuildConfig.STOCK_KEY;
     }
 
     @Override

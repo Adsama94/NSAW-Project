@@ -2,6 +2,8 @@ package com.anvil.adsama.nsaw.network;
 
 import android.util.Log;
 
+import com.anvil.adsama.nsaw.BuildConfig;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,7 +17,7 @@ import okhttp3.ResponseBody;
 class NewsParser {
 
     private static final String LOG_TAG = NewsParser.class.getSimpleName();
-    private static final String NEWS_URL = "https://newsapi.org/v2/everything?q=bitcoin&language=en&pageSize=30&sortBy=publishedAt&apiKey=f89ab3ddfae84bd8866a8d7d26d961f1";
+    private static final String NEWS_URL = "https://newsapi.org/v2/everything?q=bitcoin&language=en&pageSize=30&sortBy=publishedAt&apiKey=" + BuildConfig.NEWS_KEY;
 
     JSONObject getNewsData() {
         OkHttpClient client = new OkHttpClient();

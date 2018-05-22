@@ -1,0 +1,51 @@
+{
+  "project_info": {
+    "project_number": "85344163297",
+    "firebase_url": "https://nsaw-1518276230108.firebaseio.com",
+    "project_id": "nsaw-1518276230108",
+    "storage_bucket": "nsaw-1518276230108.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85344163297:android:3dcedb864c331e17",
+        "android_client_info": {
+          "package_name": "com.anvil.adsama.nsaw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "85344163297-vgj1tj7e2dokvtedm9tqh10d3h0t4aq2.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "85344163297-uu0k5i53lf3j9hvih5t7ph5o6dfmrjh7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD52un4EbiRR9HhwZNiJO0_9eMQWsDHOe8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "85344163297-vgj1tj7e2dokvtedm9tqh10d3h0t4aq2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
