@@ -60,6 +60,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NewsPositionInterface {
 
+    String lol = "Ayyyyyy lamo!";
     private static final String EMAIL_EXTRA = "EMAIL_EXTRA";
     private static final String URL_EXTRA = "URL_EXTRA";
     private static final String NAME_EXTRA = "NAME_EXTRA";
